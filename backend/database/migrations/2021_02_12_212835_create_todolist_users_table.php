@@ -19,6 +19,9 @@ class CreateTodolistUsersTable extends Migration
             $table->unsignedInteger('user_id');
             $table->unsignedInteger('todolist_id');
             $table->timestamps();
+
+            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('todolist_id')->references('id')->on('todolists');
         });
     }
 

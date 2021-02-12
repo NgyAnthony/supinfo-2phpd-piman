@@ -11,7 +11,7 @@ class Todolist extends Model
 
     protected $fillable = ['id','title','archived'];
 
-    public function users()
+    public function todolistusers()
     {
         return $this->hasMany(TodolistUsers::class);
     }
