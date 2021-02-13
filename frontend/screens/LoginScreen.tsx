@@ -56,6 +56,7 @@ const login = (email: string, password: string, deviceName: string) => {
     });
 }
 
+//region Styles 2
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -80,3 +81,4 @@ const styles = StyleSheet.create({
         width: 250,
     },
 });
+//endregion
