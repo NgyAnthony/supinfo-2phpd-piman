@@ -1,7 +1,7 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as React from "react";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-function checkUserLoggedIn() {
+function hasValidBearerToken() {
     const [userLoggedIn, setUserLoggedIn] = React.useState(false);
 
     // Load any resources or data that we need prior to rendering the app
@@ -22,4 +22,4 @@ function checkUserLoggedIn() {
     return userLoggedIn;
 }
 
-export default checkUserLoggedIn;
+export default hasValidBearerToken;

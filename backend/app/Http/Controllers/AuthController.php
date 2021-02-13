@@ -13,7 +13,7 @@ class AuthController extends Controller
     {
         $request->validate([
             'email' => 'required|email',
-            'password' => 'password',
+            'password' => 'required',
             'device_name' => 'required',
         ]);
 
