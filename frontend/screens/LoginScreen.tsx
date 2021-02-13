@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {Image, View, Text, StyleSheet, Button, Alert, TextInput} from 'react-native';
 import getTokenBearerName from "../hooks/getTokenBearerName";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function LoginScreen() {
     const [email, setEmail] = React.useState("");
@@ -25,6 +26,7 @@ export default function LoginScreen() {
                 <TextInput
                     style={styles.textInput}
                     placeholder="Mot de passe"
+                    secureTextEntry={true}
                     onChangeText={text => setPassword(text)}
                     value={password}
                 />
@@ -36,27 +38,55 @@ export default function LoginScreen() {
             />
             <Button
                 title="S'inscrire"
-                onPress={() => Alert.alert('Button with adjusted color pressed')}
+                onPress={() => getData()}
             />
         </View>
     );
 }
-
+//region Login
 const login = (email: string, password: string, deviceName: string) => {
-    return fetch('http://127.0.0.1:8000/api/token', {
-        method: 'POST',
-        headers: {
-            Accept: 'application/json', 'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            email: email,
-            password: password,
-            device_name: deviceName
-        })
-    });
+
+    (async () => {
+        const rawResponse = await fetch('http://127.0.0.1:8000/api/token', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                email: email,
+                password: password,
+                device_name: deviceName
+            })
+        });
+        const token = await rawResponse.text();
+        await storeBearerToken(token);
+    })();
 }
 
-//region Styles 2
+const storeBearerToken = async (token: string) => {
+    try {
+        await AsyncStorage.setItem('@bearer_token', token)
+    } catch (e) {
+        // saving error
+    }
+}
+
+
+const getData = async () => {
+    try {
+        const value = await AsyncStorage.getItem('@bearer_token')
+        if(value !== null) {
+            console.log(value)
+        }
+    } catch(e) {
+        // error reading value
+    }
+}
+
+//endregion
+
+//region Styles
 const styles = StyleSheet.create({
     container: {
         flex: 1,
