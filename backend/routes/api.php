@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TodolistController;
@@ -19,5 +20,6 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/get-todolists', [TodolistController::class, 'index']);
-Route::post('/add-todolist', [TodolistController::class, 'store']);
+Route::post('/token', [AuthController::class, 'requestToken']);
+Route::middleware('auth:sanctum')->post('/add-todolist', [TodolistController::class, 'store']);
+Route::middleware('auth:sanctum')->get('/get-todolists', [TodolistController::class, 'index']);
