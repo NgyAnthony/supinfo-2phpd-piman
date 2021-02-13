@@ -13,7 +13,7 @@ class AuthController extends Controller
     {
         $request->validate([
             'email' => 'required|email',
-            'password' => 'required',
+            'password' => 'password',
             'device_name' => 'required',
         ]);
 
@@ -26,5 +26,28 @@ class AuthController extends Controller
         }
 
         return $user->createToken($request->device_name)->plainTextToken;
+    }
+
+    public function store(Request $request)
+    {
+        $this->validate($request, [
+            'name' => 'required',
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
+
+        $user = User::where('email', $request->email)->first();
+
+        if ($user) {
+            return response()->json("User already exists !",422);
+        } else {
+            $user = new User;
+            $user->name = $request->name;
+            $user->email = $request->email;
+            $user->password = Hash::make($request-> password);
+            $user->save();
+
+            return $user;
+        }
     }
 }
