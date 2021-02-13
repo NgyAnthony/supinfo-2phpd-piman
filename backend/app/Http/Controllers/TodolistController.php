@@ -38,16 +38,14 @@ class TodolistController extends Controller
      * Store a newly created resource in storage.
      *
      * @param Request $request
-     * @param $role
      * @return TodolistResource
      * @throws ValidationException
      */
-    public function store(Request $request, $role): TodolistResource
+    public function store(Request $request): TodolistResource
     {
         $this->validate($request, [
             'title' => 'required',
-            'description' => 'required',
-            'author' => 'required',
+            'archived' => 'required',
         ]);
 
         $todolist = new Todolist;
@@ -58,7 +56,7 @@ class TodolistController extends Controller
         $todolistusers = new TodolistUsers;
         $todolistusers->user_id = $request->user()->id;
         $todolistusers->todolist_id = $todolist->id;
-        $todolistusers->role = $role;
+        $todolistusers->role = "Admin";
         $todolistusers->save();
 
         return new TodolistResource($todolist);
