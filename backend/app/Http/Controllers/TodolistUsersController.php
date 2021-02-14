@@ -79,7 +79,7 @@ class TodolistUsersController extends Controller
      * @param TodolistUsers $todolistUsers
      * @return TodolistUsersResource|JsonResponse
      */
-    public function update(Request $request, TodolistUsers $todolistUsers): TodolistUsersResource|JsonResponse
+    public function update(Request $request, TodolistUsers $todolistUsers)
     {
         if($todolistUsers->user_id !== $request->user()->id){
             return response()->json(['error' => 'You can only edit your own Todolist.'], 403);
@@ -96,7 +96,7 @@ class TodolistUsersController extends Controller
      * @return JsonResponse
      * @throws Exception
      */
-    public function destroy(Request $request, TodolistUsers $todolistUsers): JsonResponse
+    public function destroy(Request $request, TodolistUsers $todolistUsers)
     {
         if($todolistUsers->user_id !== $request->user()->id){
             return response()->json(['error' => 'You can only edit your own Todolist.'], 403);

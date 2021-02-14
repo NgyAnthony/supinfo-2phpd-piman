@@ -18,7 +18,6 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         // \App\Models\User::factory(10)->create();
-        Todolist::truncate();
         $faker = Factory::create();
         for ($i = 0; $i < 50; $i++) {
             Todolist::create([
@@ -26,7 +25,6 @@ class DatabaseSeeder extends Seeder
                 'archived' => $faker->boolean,
             ]);
         }
-        User::truncate();
         User::create([
             'name' => 'Alex',
             'email' => 'alex@alex.com',

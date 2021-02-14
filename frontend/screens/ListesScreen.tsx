@@ -3,21 +3,10 @@ import {DevSettings, FlatList, StyleSheet} from 'react-native';
 
 import { Text, View } from '../components/Themed';
 import getTokenBearer from "../hooks/auth/getTokenBearer";
-
-// @ts-ignore
-const Item = ({ title }) => (
-    <View style={styles.item}>
-        <Text style={styles.title}>{title}</Text>
-    </View>
-);
-
-// @ts-ignore
-const renderItem = ({ item }) => (
-    <Item title={item.title} />
-);
+import { User, Task, TodolistInterface } from "../interfaces/TodolistsInterface"
 
 export default function ListesScreen() {
-    const [todolists, setTodolists] = React.useState([]);
+    const [todolists, setTodolists] = React.useState<TodolistInterface[] | undefined>();
     const token = getTokenBearer();
 
     const getTodolists = () => {
@@ -31,23 +20,33 @@ export default function ListesScreen() {
                 }
             });
             if(rawResponse.ok){
-                console.log("HERE")
-                const todolists = await rawResponse.json();
-                console.log(todolists);
+                const resp = await rawResponse.json();
+                setTodolists(resp.data)
+                console.log(resp)
             }
         })();
     }
 
-    React.useEffect(() => {
-        getTodolists()
-    }, [])
+    getTodolists()
+
+
+    // @ts-ignore
+    const Item = ({ title }) => (
+        <View style={styles.item}>
+            <Text style={styles.title}>{title}</Text>
+        </View>
+    );
+
+    // @ts-ignore
+    const renderItem = ({ item }: { item: RootObject }) => (
+        <Item title={item.title} />
+    );
 
     return (
     <View style={styles.container}>
         <FlatList
             data={todolists}
             renderItem={renderItem}
-            keyExtractor={item => item.id}
         />
     </View>
   );

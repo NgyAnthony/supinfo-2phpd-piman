@@ -9,7 +9,12 @@ class TodolistUsers extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['role', 'user_id', 'todolist_id'];
+    protected $fillable = ['role', 'email', 'user_id', 'todolist_id'];
+
+    public function user()
+    {
+        return $this->hasMany(User::class);
+    }
 
     public function todolist()
     {
