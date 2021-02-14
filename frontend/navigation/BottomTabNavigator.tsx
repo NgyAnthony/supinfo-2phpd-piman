@@ -9,10 +9,11 @@ import {BottomTabParamList, AccueilParamList, ListesParamList, ParametresParamLi
 import AccueilScreen from "../screens/AccueilScreen";
 import ListesScreen from "../screens/ListesScreen";
 import ParametresScreen from "../screens/ParametresScreen";
+import {Context} from "react";
 
 const BottomTab = createBottomTabNavigator<BottomTabParamList>();
 
-export default function BottomTabNavigator() {
+export default function BottomTabNavigator({authContext} : {authContext:Context<any>}) {
   const colorScheme = useColorScheme();
 
   return (
@@ -33,13 +34,11 @@ export default function BottomTabNavigator() {
           tabBarIcon: ({ color }) => <TabBarIcon name="ios-list" color={color} />,
         }}
       />
-      <BottomTab.Screen
-        name="Paramètres"
-        component={ParametresNavigator}
-        options={{
+      <BottomTab.Screen name="Paramètres" options={{
           tabBarIcon: ({ color }) => <TabBarIcon name="ios-settings" color={color} />,
-        }}
-      />
+      }}>
+          {(props) => <ParametresNavigator authContext={authContext} />}
+      </BottomTab.Screen>
     </BottomTab.Navigator>
   );
 }
@@ -82,14 +81,12 @@ function ListesNavigator() {
 
 const ParametresStack = createStackNavigator<ParametresParamList>();
 
-function ParametresNavigator() {
+function ParametresNavigator({authContext}: {authContext: Context<any>}) {
     return (
         <ParametresStack.Navigator>
-            <ParametresStack.Screen
-                name="ParametresScreen"
-                component={ParametresScreen}
-                options={{ headerTitle: 'Paramètres' }}
-            />
+            <ParametresStack.Screen name='ParametresScreen' options={{ headerTitle: 'Paramètres' }}>
+                {(props) => <ParametresScreen authContext={authContext} />}
+            </ParametresStack.Screen>
         </ParametresStack.Navigator>
     );
 }

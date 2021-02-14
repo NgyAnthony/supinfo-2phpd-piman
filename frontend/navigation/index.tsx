@@ -7,17 +7,17 @@ import NotFoundScreen from '../screens/NotFoundScreen';
 import { RootStackParamList } from '../types';
 import BottomTabNavigator from './BottomTabNavigator';
 import LinkingConfiguration from './LinkingConfiguration';
+import {Context} from "react";
 
 // If you are not familiar with React Navigation, we recommend going through the
 // "Fundamentals" guide: https://reactnavigation.org/docs/getting-started
 export default function Navigation(
-    { colorScheme, userToken }: { colorScheme: ColorSchemeName, userToken: String },
-    ) {
+    { colorScheme, authContext }: { colorScheme: ColorSchemeName, authContext:Context<any>}) {
   return (
     <NavigationContainer
       linking={LinkingConfiguration}
       theme={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <RootNavigator/>
+      <RootNavigator authContext={authContext}/>
     </NavigationContainer>
   );
 }
@@ -26,10 +26,12 @@ export default function Navigation(
 // Read more here: https://reactnavigation.org/docs/modal
 const Stack = createStackNavigator<RootStackParamList>();
 
-function RootNavigator() {
+function RootNavigator({authContext}: {authContext: Context<any>}) {
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Root" component={BottomTabNavigator} />
+    <Stack.Navigator screenOptions={{ headerShown: false }} >
+      <Stack.Screen name='Root' options={{ title: 'Home' }}>
+          {(props) => <BottomTabNavigator authContext={authContext} />}
+      </Stack.Screen>
       <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
     </Stack.Navigator>
   );

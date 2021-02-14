@@ -56,7 +56,7 @@ export default function App() {
     /**
      * Main navigation that leads to the Application once logged in
      */
-  const app = <Navigation colorScheme={colorScheme} userToken={state.token}/>;
+  const app = <Navigation colorScheme={colorScheme} authContext={AuthContext}/>;
 
     /**
      * Check if bearer token is already persisted and store it into our reducer
@@ -113,6 +113,17 @@ export default function App() {
   }
 
     /**
+     * Remove bearer token, used on logout
+     */
+  const removeBearerToken = async () => {
+      try {
+          await AsyncStorage.removeItem('@bearer_token')
+      } catch (e) {
+          // saving error
+      }
+  }
+
+    /**
      * Get the name of the device
      */
   const deviceName = getTokenBearerName();
@@ -126,7 +137,12 @@ export default function App() {
           signIn: async data => {
               login(data.email, data.password, deviceName)
           },
-          signOut: () => dispatch({ type: 'SIGN_OUT' }),
+          signOut: () => {
+              removeBearerToken();
+              dispatch({ type: 'SIGN_OUT' });
+              console.log("HEEEEREEE")
+              console.log(state.userToken)
+          },
           // @ts-ignore
           signUp: async data => {
               // register

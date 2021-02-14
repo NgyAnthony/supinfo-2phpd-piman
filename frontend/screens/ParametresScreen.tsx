@@ -2,26 +2,19 @@ import * as React from 'react';
 import {Button, DevSettings, StyleSheet} from 'react-native';
 
 import { Text, View } from '../components/Themed';
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import {Context} from "react";
 
-export default function ParametresScreen() {
+export default function ParametresScreen({authContext}: {authContext: Context<any>}) {
+    const { signOut } = React.useContext(authContext);
+
     return (
         <View style={styles.container}>
             <Button
-                onPress={removeBearerToken}
+                onPress={signOut}
                 title="Se déconnecter"
             />
         </View>
     );
-}
-
-const removeBearerToken = async () => {
-    try {
-        await AsyncStorage.removeItem('@bearer_token')
-        DevSettings.reload("User logged out, reloading app...")
-    } catch (e) {
-        // saving error
-    }
 }
 
 const styles = StyleSheet.create({
