@@ -7,8 +7,10 @@ import {Button, Image, StyleSheet, TextInput} from "react-native";
 export function InscriptionScreen({authContext, navigation}) {
     const [email, setEmail] = React.useState("");
     const [password, setPassword] = React.useState("");
+    const [name, setName] = React.useState("");
+
     // @ts-ignore
-    const { signIn } = React.useContext(authContext);
+    const { signUp } = React.useContext(authContext);
 
     return (
         <View style={styles.container}>
@@ -16,6 +18,13 @@ export function InscriptionScreen({authContext, navigation}) {
             <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
 
             <View style={{ justifyContent:"center"}}>
+                <TextInput
+                    style={styles.textInput}
+                    placeholder="Nom"
+                    onChangeText={text => setName(text)}
+                    value={name}
+                />
+
                 <TextInput
                     style={styles.textInput}
                     placeholder="Email"
@@ -35,7 +44,7 @@ export function InscriptionScreen({authContext, navigation}) {
 
             <Button
                 title="S'inscrire"
-                onPress={() => signIn({email, password})}
+                onPress={() => signUp({name, email, password})}
             />
         </View>
     );

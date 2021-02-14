@@ -12,6 +12,7 @@ import {NavigationContainer} from "@react-navigation/native";
 import {createStackNavigator} from "@react-navigation/stack";
 import BottomTabNavigator from "./navigation/BottomTabNavigator";
 import {InscriptionScreen} from "./screens/InscriptionScreen";
+import {Alert} from "react-native";
 
 /**
  * AuthContext is used to provide a memo that can be called from screens
@@ -128,6 +129,28 @@ export default function App() {
       })();
   }
 
+    const register = (name: string, email: string, password: string) => {
+        (async () => {
+            const rawResponse = await fetch('http://127.0.0.1:8000/api/register', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    name: name,
+                    email: email,
+                    password: password
+                })
+            });
+            if(rawResponse.ok){
+                // Get token
+                Alert.alert("Inscription réussie ! Redirection vers l'appli...")
+                login(email, password, deviceName)
+            }
+        })();
+    }
+
     /**
      * Remove bearer token, used on logout
      */
@@ -159,8 +182,7 @@ export default function App() {
           },
           // @ts-ignore
           signUp: async data => {
-              // register
-              // login
+              register(data.name, data.email, data.password)
           },
       }),
       []
