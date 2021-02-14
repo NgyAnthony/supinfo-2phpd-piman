@@ -1,7 +1,8 @@
 import * as React from 'react';
-import {Image, View, Text, StyleSheet, Button, Alert, TextInput} from 'react-native';
+import {Image, StyleSheet, Button, Alert, TextInput, DevSettings} from 'react-native';
 import getTokenBearerName from "../hooks/getTokenBearerName";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Text, View } from '../components/Themed';
 
 export default function LoginScreen() {
     const [email, setEmail] = React.useState("");
@@ -15,7 +16,9 @@ export default function LoginScreen() {
                 source={require('../assets/images/supinfo-logo-2020-quadri-png.png')}
             />
             <Text style={styles.title}>Bienvenue sur Todolist</Text>
-            <View style={{height: 150, justifyContent:"center"}}>
+            <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
+
+            <View style={{ justifyContent:"center"}}>
                 <TextInput
                     style={styles.textInput}
                     placeholder="Email"
@@ -31,6 +34,7 @@ export default function LoginScreen() {
                     value={password}
                 />
             </View>
+            <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
 
             <Button
                 title="Se connecter"
@@ -43,6 +47,7 @@ export default function LoginScreen() {
         </View>
     );
 }
+
 //region Login
 const login = (email: string, password: string, deviceName: string) => {
 
@@ -59,8 +64,11 @@ const login = (email: string, password: string, deviceName: string) => {
                 device_name: deviceName
             })
         });
-        const token = await rawResponse.text();
-        await storeBearerToken(token);
+        if(rawResponse.ok){
+            const token = await rawResponse.text();
+            await storeBearerToken(token);
+            DevSettings.reload("User successfully logged in, reloading app...")
+        }
     })();
 }
 
@@ -83,7 +91,6 @@ const getData = async () => {
         // error reading value
     }
 }
-
 //endregion
 
 //region Styles

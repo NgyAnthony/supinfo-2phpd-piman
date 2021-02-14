@@ -2,8 +2,8 @@ import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-import useCachedResources from './hooks/useCachedResources';
-import useColorScheme from './hooks/useColorScheme';
+import useCachedResources from './hooks/ui/useCachedResources';
+import useColorScheme from './hooks/ui/useColorScheme';
 import hasValidBearerToken from './hooks/hasValidBearerToken';
 import Navigation from './navigation';
 import LoginScreen from "./screens/LoginScreen";

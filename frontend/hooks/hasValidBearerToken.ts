@@ -9,6 +9,7 @@ function hasValidBearerToken() {
         async function checkBearerToken() {
             try {
                 const value = await AsyncStorage.getItem('@bearer_token')
+
                 if(value !== null) {
                     setUserLoggedIn(true);
                 }
