@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {Image, StyleSheet, Button, Alert, TextInput, DevSettings} from 'react-native';
-import getTokenBearerName from "../hooks/getTokenBearerName";
+import getTokenBearerName from "../hooks/auth/getTokenBearerName";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Text, View } from '../components/Themed';
 

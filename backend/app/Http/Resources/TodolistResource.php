@@ -14,12 +14,15 @@ class TodolistResource extends JsonResource
      */
     public function toArray($request)
     {
-        //transforms the resource into an array made up of the attributes to be converted to JSON
-        return [
-            'id'=> $this->id,
-            'title'=> $this->title,
-            'archived'=> $this->archived,
-            'users' => $this->todolistusers,
-        ];
+        $users = collect(json_decode($this->todolistusers, true));
+
+        if($users -> contains('user_id', $request->user()->id)){
+            return [
+                'id'=> $this->id,
+                'title'=> $this->title,
+                'archived'=> $this->archived,
+                'users' => $this->todolistusers,
+            ];
+        }
     }
 }

@@ -4,7 +4,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import useCachedResources from './hooks/ui/useCachedResources';
 import useColorScheme from './hooks/ui/useColorScheme';
-import hasValidBearerToken from './hooks/hasValidBearerToken';
+import hasValidBearerToken from './hooks/auth/hasValidBearerToken';
 import Navigation from './navigation';
 import LoginScreen from "./screens/LoginScreen";
 

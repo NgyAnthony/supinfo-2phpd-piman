@@ -19,8 +19,10 @@ class TodolistController extends Controller
      *
      * @return AnonymousResourceCollection
      */
-    public function index()
+    public function index(Request $request)
     {
+        //TODO: Do not return null (need to find another way to filter based on FK)
+
         return TodolistResource::collection(Todolist::all());
     }
 
