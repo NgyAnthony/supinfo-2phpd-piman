@@ -1,33 +1,43 @@
 import * as React from 'react';
-import {DevSettings, FlatList, StyleSheet} from 'react-native';
+import {DevSettings, FlatList, RefreshControl, SafeAreaView, ScrollView, StyleSheet} from 'react-native';
 
 import { Text, View } from '../components/Themed';
 import getTokenBearer from "../hooks/auth/getTokenBearer";
 import { User, Task, TodolistInterface } from "../interfaces/TodolistsInterface"
 
+const wait = (timeout: number) => {
+    return new Promise(resolve => setTimeout(resolve, timeout));
+}
+
 export default function ListesScreen() {
     const [todolists, setTodolists] = React.useState<TodolistInterface[] | undefined>();
     const token = getTokenBearer();
+    const [refreshing, setRefreshing] = React.useState(false);
 
-    const getTodolists = () => {
-        (async () => {
-            const rawResponse = await fetch('http://127.0.0.1:8000/api/get-todolists', {
-                method: 'GET',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + token
-                }
-            });
-            if(rawResponse.ok){
-                const resp = await rawResponse.json();
-                setTodolists(resp.data)
-                console.log(resp)
+    const onRefresh = React.useCallback(() => {
+        setRefreshing(true);
+        fetchTodolists();
+        wait(1000).then(() => setRefreshing(false));
+    }, []);
+
+    async function fetchTodolists() {
+        const rawResponse = await fetch('http://127.0.0.1:8000/api/get-todolists', {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
             }
-        })();
-    }
+        });
 
-    getTodolists()
+        if(rawResponse.ok){
+            const resp = await rawResponse.json();
+            setTodolists(resp.data)
+        }
+    }
+    React.useEffect(() => {
+        fetchTodolists();
+    }, [token])
 
 
     // @ts-ignore
@@ -43,13 +53,19 @@ export default function ListesScreen() {
     );
 
     return (
-    <View style={styles.container}>
-        <FlatList
-            data={todolists}
-            renderItem={renderItem}
-        />
-    </View>
-  );
+        <View style={styles.container}>
+            <FlatList
+                refreshControl={<RefreshControl
+                    colors={["#9Bd35A", "#689F38"]}
+                    refreshing={refreshing}
+                    onRefresh={onRefresh} />
+                }
+                data={todolists}
+                renderItem={renderItem}
+                keyExtractor={(item) => item.id.toString()}
+            />
+        </View>
+    );
 }
 
 //region Styles
