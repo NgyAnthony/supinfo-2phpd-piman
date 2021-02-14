@@ -4,7 +4,7 @@ import {Text, View} from "../components/Themed";
 import {Button, Image, StyleSheet, TextInput} from "react-native";
 
 // @ts-ignore
-export function LoginScreen({authContext, navigation}) {
+export function InscriptionScreen({authContext, navigation}) {
     const [email, setEmail] = React.useState("");
     const [password, setPassword] = React.useState("");
     // @ts-ignore
@@ -12,11 +12,7 @@ export function LoginScreen({authContext, navigation}) {
 
     return (
         <View style={styles.container}>
-            <Image
-                style={styles.logo}
-                source={require('../assets/images/supinfo-logo-2020-quadri-png.png')}
-            />
-            <Text style={styles.title}>Bienvenue sur Todolist</Text>
+            <Text style={styles.title}>Inscription</Text>
             <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
 
             <View style={{ justifyContent:"center"}}>
@@ -38,12 +34,8 @@ export function LoginScreen({authContext, navigation}) {
             <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
 
             <Button
-                title="Se connecter"
+                title="S'inscrire"
                 onPress={() => signIn({email, password})}
-            />
-            <Button
-                title="Nouvel utilisateur ? S'inscrire"
-                onPress={() => navigation.navigate('Register')}
             />
         </View>
     );

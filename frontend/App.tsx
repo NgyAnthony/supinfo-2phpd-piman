@@ -8,6 +8,10 @@ import useColorScheme from './hooks/ui/useColorScheme';
 import Navigation from './navigation';
 import getTokenBearerName from "./hooks/auth/getTokenBearerName";
 import {LoginScreen} from "./screens/LoginScreen";
+import {NavigationContainer} from "@react-navigation/native";
+import {createStackNavigator} from "@react-navigation/stack";
+import BottomTabNavigator from "./navigation/BottomTabNavigator";
+import {InscriptionScreen} from "./screens/InscriptionScreen";
 
 /**
  * AuthContext is used to provide a memo that can be called from screens
@@ -58,6 +62,22 @@ export default function App() {
      */
   const app = <Navigation colorScheme={colorScheme} authContext={AuthContext}/>;
 
+  const Stack = createStackNavigator();
+  const loginStack = (
+      <NavigationContainer>
+          <Stack.Navigator initialRouteName="Login">
+              <Stack.Screen name='Login' options={{ title: 'Se connecter' }}>
+                  {(props) =>
+                      <LoginScreen navigation={props.navigation} authContext={AuthContext} />}
+              </Stack.Screen>
+              <Stack.Screen name='Register' options={{ title: 'Inscription' }}>
+                  {(props) =>
+                      <InscriptionScreen navigation={props.navigation} authContext={AuthContext} />}
+              </Stack.Screen>
+          </Stack.Navigator>
+      </NavigationContainer>
+      );
+
     /**
      * Check if bearer token is already persisted and store it into our reducer
      */
@@ -82,9 +102,6 @@ export default function App() {
      * @param deviceName
      */
   const login = (email: string, password: string, deviceName: string) => {
-      console.log(email);
-      console.log(password);
-      console.log(deviceName);
       (async () => {
           const rawResponse = await fetch('http://127.0.0.1:8000/api/token', {
               method: 'POST',
@@ -105,7 +122,6 @@ export default function App() {
               // Persist token
               await AsyncStorage.setItem('@bearer_token', token).then(() =>{
                       dispatch({ type: 'SIGN_IN', token: token })
-                      console.log(token)
                   }
               )
           }
@@ -140,8 +156,6 @@ export default function App() {
           signOut: () => {
               removeBearerToken();
               dispatch({ type: 'SIGN_OUT' });
-              console.log("HEEEEREEE")
-              console.log(state.userToken)
           },
           // @ts-ignore
           signUp: async data => {
@@ -162,7 +176,7 @@ export default function App() {
       <AuthContext.Provider value={authContext}>
           <SafeAreaProvider>
               {state.userToken == null ?
-                  (<LoginScreen AuthContext={AuthContext}/>) : app
+                  loginStack : app
               }
               <StatusBar />
           </SafeAreaProvider>
