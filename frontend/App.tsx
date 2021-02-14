@@ -7,83 +7,12 @@ import useCachedResources from './hooks/ui/useCachedResources';
 import useColorScheme from './hooks/ui/useColorScheme';
 import Navigation from './navigation';
 import getTokenBearerName from "./hooks/auth/getTokenBearerName";
-import {Text, View} from "./components/Themed";
-import {Button, Image, StyleSheet, TextInput} from "react-native";
+import {LoginScreen} from "./screens/LoginScreen";
 
 /**
  * AuthContext is used to provide a memo that can be called from screens
  */
 const AuthContext = React.createContext({});
-
-//region Login - Main screen
-export function LoginScreen() {
-    const [email, setEmail] = React.useState("");
-    const [password, setPassword] = React.useState("");
-    // @ts-ignore
-    const { signIn } = React.useContext(AuthContext);
-
-    return (
-        <View style={styles.container}>
-            <Image
-                style={styles.logo}
-                source={require('./assets/images/supinfo-logo-2020-quadri-png.png')}
-            />
-            <Text style={styles.title}>Bienvenue sur Todolist</Text>
-            <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-
-            <View style={{ justifyContent:"center"}}>
-                <TextInput
-                    style={styles.textInput}
-                    placeholder="Email"
-                    onChangeText={text => setEmail(text)}
-                    value={email}
-                />
-
-                <TextInput
-                    style={styles.textInput}
-                    placeholder="Mot de passe"
-                    secureTextEntry={true}
-                    onChangeText={text => setPassword(text)}
-                    value={password}
-                />
-            </View>
-            <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-
-            <Button
-                title="Se connecter"
-                onPress={() => signIn({email, password})}
-            />
-        </View>
-    );
-}
-//endregion
-
-//region Login - Styles
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    title: {
-        fontSize: 20,
-        fontWeight: 'bold',
-    },
-    separator: {
-        marginVertical: 30,
-        height: 1,
-        width: '80%',
-    },
-    logo: {
-        width: 150,
-        height: 150
-    },
-    textInput: {
-        height: 50,
-        width: 250,
-    },
-});
-//endregion
 
 // @ts-ignore
 export default function App() {
@@ -124,10 +53,15 @@ export default function App() {
       }
   );
 
+    /**
+     * Main navigation that leads to the Application once logged in
+     */
   const app = <Navigation colorScheme={colorScheme} userToken={state.token}/>;
 
+    /**
+     * Check if bearer token is already persisted and store it into our reducer
+     */
   React.useEffect(() => {
-      // Fetch the token from storage then navigate to our appropriate place
       const bootstrapAsync = async () => {
           let userToken;
 
@@ -136,13 +70,7 @@ export default function App() {
           } catch (e) {
               // Restoring token failed
           }
-
-          // After restoring token, we may need to validate it in production apps
-
-          // This will switch to the App screen or Auth screen and this loading
-          // screen will be unmounted and thrown away.
           dispatch({ type: 'RESTORE_TOKEN', token: userToken });
-          console.log(userToken);
       };
       bootstrapAsync();
   }, []);
@@ -218,7 +146,7 @@ export default function App() {
       <AuthContext.Provider value={authContext}>
           <SafeAreaProvider>
               {state.userToken == null ?
-                  (<LoginScreen/>) : app
+                  (<LoginScreen AuthContext={AuthContext}/>) : app
               }
               <StatusBar />
           </SafeAreaProvider>
