@@ -10,6 +10,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
 class TodolistController extends Controller
@@ -21,9 +22,12 @@ class TodolistController extends Controller
      */
     public function index(Request $request)
     {
-        //TODO: Do not return null (need to find another way to filter based on FK)
+        $userId = $request->user()->id;
+        $todolists = Todolist::whereHas('todolistUsers', function($q) use($userId) {
+            $q->where('user_id', $userId);
+        })->get();
 
-        return TodolistResource::collection(Todolist::all());
+        return $todolists;
     }
 
     /**
