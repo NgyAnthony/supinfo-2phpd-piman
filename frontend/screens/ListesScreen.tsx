@@ -1,19 +1,61 @@
 import * as React from 'react';
-import { StyleSheet } from 'react-native';
+import {DevSettings, FlatList, StyleSheet} from 'react-native';
 
-import EditScreenInfo from '../components/EditScreenInfo';
 import { Text, View } from '../components/Themed';
+import getTokenBearer from "../hooks/auth/getTokenBearer";
+
+// @ts-ignore
+const Item = ({ title }) => (
+    <View style={styles.item}>
+        <Text style={styles.title}>{title}</Text>
+    </View>
+);
+
+// @ts-ignore
+const renderItem = ({ item }) => (
+    <Item title={item.title} />
+);
 
 export default function ListesScreen() {
-  return (
+    const [todolists, setTodolists] = React.useState([]);
+    const token = getTokenBearer();
+
+    const getTodolists = () => {
+        (async () => {
+            console.log("HAPPENS")
+
+            const rawResponse = await fetch('http://127.0.0.1:8000/api/get-todolists', {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token
+                }
+            });
+
+            if(rawResponse.ok){
+                const todolists = await rawResponse.json();
+                console.log(todolists);
+            }
+        })();
+    }
+
+    React.useEffect(() => {
+        getTodolists()
+    }, [])
+
+    return (
     <View style={styles.container}>
-      <Text style={styles.title}>Listes</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <EditScreenInfo path="/screens/ListesScreen.tsx" />
+        <FlatList
+            data={todolists}
+            renderItem={renderItem}
+            keyExtractor={item => item.id}
+        />
     </View>
   );
 }
 
+//region Styles
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -29,4 +71,11 @@ const styles = StyleSheet.create({
     height: 1,
     width: '80%',
   },
+  item: {
+    backgroundColor: '#f9c2ff',
+    padding: 20,
+    marginVertical: 8,
+    marginHorizontal: 16,
+  },
 });
+//endregion

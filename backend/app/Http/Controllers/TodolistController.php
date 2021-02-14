@@ -27,7 +27,7 @@ class TodolistController extends Controller
             $q->where('user_id', $userId);
         })->get();
 
-        return $todolists;
+        return TodolistResource::collection($todolists);
     }
 
     /**
