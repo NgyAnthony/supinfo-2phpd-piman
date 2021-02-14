@@ -22,8 +22,6 @@ export default function ListesScreen() {
 
     const getTodolists = () => {
         (async () => {
-            console.log("HAPPENS")
-
             const rawResponse = await fetch('http://127.0.0.1:8000/api/get-todolists', {
                 method: 'GET',
                 headers: {
@@ -32,8 +30,8 @@ export default function ListesScreen() {
                     'Authorization': 'Bearer ' + token
                 }
             });
-
             if(rawResponse.ok){
+                console.log("HERE")
                 const todolists = await rawResponse.json();
                 console.log(todolists);
             }

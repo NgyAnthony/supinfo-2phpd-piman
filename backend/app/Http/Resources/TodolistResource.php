@@ -20,6 +20,7 @@ class TodolistResource extends JsonResource
             'title'=> $this->title,
             'archived'=> $this->archived,
             'users' => $this->todolistusers,
+            'tasks' => $this->todolisttasks
         ];
     }
 }
