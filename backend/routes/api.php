@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\TaskController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TodolistController;
@@ -23,4 +24,5 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::post('/token', [AuthController::class, 'requestToken']);
 Route::post('/register', [AuthController::class, 'store']);
 Route::middleware('auth:sanctum')->post('/add-todolist', [TodolistController::class, 'store']);
+Route::middleware('auth:sanctum')->post('/deactivate-task', [TaskController::class, 'deactivateTask']);
 Route::middleware('auth:sanctum')->get('/get-todolists', [TodolistController::class, 'index']);

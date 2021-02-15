@@ -41,10 +41,5 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
-
-    public function todolistUsers()
-    {
-        return $this->belongsTo(TodolistUsers::class);
-    }
 }
 

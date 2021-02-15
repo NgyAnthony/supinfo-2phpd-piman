@@ -23,7 +23,7 @@ class TodolistController extends Controller
     public function index(Request $request)
     {
         $userId = $request->user()->id;
-        $todolists = Todolist::whereHas('todolistUsers', function($q) use($userId) {
+        $todolists = Todolist::whereHas('TodolistUsers', function($q) use($userId) {
             $q->where('user_id', $userId);
         })->get();
 
@@ -83,14 +83,17 @@ class TodolistController extends Controller
      * Update the specified resource in storage.
      *
      * @param Request $request
-     * @param Todolist $todolist
      * @return TodolistResource|JsonResponse
      */
-    public function update(Request $request, Todolist $todolist)
+    public function update(Request $request)
     {
-        if($todolist->todolistusers()->user_id !== $request->user()->id){
-            return response()->json(['error' => 'You can only edit your own Todolist.'], 403);
-        }
+        $userId = $request->user()->id;
+        $todolistId = $request->todolist_id;
+        $todolist = Todolist::whereHas('todolistUsers', function($q) use($userId, $todolistId) {
+            $q->where('user_id', $userId)
+              ->where('todolist_id', $todolistId);
+        })->first();
+
         $todolist->update($request->only(['title','archived']));
         return new TodolistResource($todolist);
     }

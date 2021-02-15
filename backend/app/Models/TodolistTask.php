@@ -10,12 +10,12 @@ class TodolistTask extends Model
     use HasFactory;
 
     protected $fillable = [
-        'title', 'description', 'description',
+        'title', 'description',
         'active', 'tag', 'archived', 'todolist_id'
     ];
 
-    public function todolist()
+    public function taskusers()
     {
-        return $this->belongsTo(Todolist::class);
+        return $this->hasMany(TaskUsers::class, 'task_id');
     }
 }
