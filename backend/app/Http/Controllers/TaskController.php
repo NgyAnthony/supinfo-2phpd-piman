@@ -34,4 +34,35 @@ class TaskController extends Controller
         $task->save();
         return new TaskResource($task);
     }
+
+    public function create(Request $request)
+    {
+        $this->validate($request, [
+            'title' => 'required',
+            'todolist_id' => 'required',
+        ]);
+
+        $task = new TodolistTask;
+        $task->title = $request->title;
+
+        if(!empty($request->description)) {
+            $task->description = $request->description;
+        }
+
+        if(!empty($task->tag = $request->tag)){
+            $task->tag = $request->tag;
+        }
+
+        $task->archived = 0;
+        $task->active = 1;
+        $task->todolist_id = $request->todolist_id;
+        $task->save();
+
+        $taskusers = new TaskUsers;
+        $taskusers->user_id = $request->user()->id;
+        $taskusers->task_id = $task->id;
+        $taskusers->save();
+
+        return new TaskResource($task);
+    }
 }

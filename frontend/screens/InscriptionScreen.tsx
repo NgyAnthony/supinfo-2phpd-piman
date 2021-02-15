@@ -1,4 +1,4 @@
-//region Login - Main screen
+//region Register - Main screen
 import * as React from "react";
 import {Text, View} from "../components/Themed";
 import {Button, Image, StyleSheet, TextInput} from "react-native";
@@ -51,7 +51,7 @@ export function InscriptionScreen({authContext, navigation}) {
 }
 //endregion
 
-//region Login - Styles
+//region Register - Styles
 const styles = StyleSheet.create({
     container: {
         flex: 1,

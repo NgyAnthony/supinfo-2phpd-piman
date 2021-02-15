@@ -2,7 +2,6 @@ import * as React from 'react';
 import {
     Alert,
     Button,
-    CheckBox,
     DevSettings,
     FlatList,
     RefreshControl,
@@ -14,6 +13,8 @@ import {
 import { Text, View } from '../components/Themed';
 import getTokenBearer from "../hooks/auth/getTokenBearer";
 import { User, Task, TodolistInterface } from "../interfaces/TodolistsInterface"
+import { useNavigation } from '@react-navigation/native';
+import { LoginScreen } from './LoginScreen';
 
 const wait = (timeout: number) => {
     return new Promise(resolve => setTimeout(resolve, timeout));
@@ -23,6 +24,7 @@ export default function ListesScreen() {
     const [todolists, setTodolists] = React.useState<TodolistInterface[] | undefined>();
     const token = getTokenBearer();
     const [refreshing, setRefreshing] = React.useState(false);
+    const navigation = useNavigation();
 
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
@@ -31,6 +33,7 @@ export default function ListesScreen() {
     }, []);
 
     async function fetchTodolists() {
+        console.log("Fetch called !")
         const rawResponse = await fetch('http://127.0.0.1:8000/api/get-todolists', {
             method: 'GET',
             headers: {
@@ -90,6 +93,7 @@ export default function ListesScreen() {
         </View>
     );
 
+
     // @ts-ignore
     const renderTask = ({ item }: { item: Task }) => {
         if(item.active == 1){
@@ -109,6 +113,11 @@ export default function ListesScreen() {
                 data={todolist.tasks}
                 renderItem={renderTask}
                 keyExtractor={(item) => item.id.toString()}
+            />
+
+            <Button
+                onPress ={() => navigation.navigate('AjoutTacheScreen', {todolist_id: todolist.id})}
+                title="Ajouter une tâche"
             />
         </View>
     );

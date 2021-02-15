@@ -17,8 +17,8 @@ class CreateTodolistTasksTable extends Migration
             $table->id();
             $table->bigInteger('todolist_id')->unsigned()->index(); // this is working
             $table->string('title');
-            $table->string('description');
-            $table->string('tag');
+            $table->string('description')->nullable();
+            $table->string('tag')->nullable();
             $table->boolean('active');
             $table->boolean('archived');
             $table->timestamps();

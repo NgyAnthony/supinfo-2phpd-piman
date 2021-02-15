@@ -15,6 +15,7 @@ export type AccueilParamList = {
 
 export type ListesParamList = {
     ListesScreen: undefined;
+    AjoutTacheScreen: undefined;
 };
 
 export type ParametresParamList = {

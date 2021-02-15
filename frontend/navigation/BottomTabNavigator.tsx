@@ -10,6 +10,7 @@ import AccueilScreen from "../screens/AccueilScreen";
 import ListesScreen from "../screens/ListesScreen";
 import ParametresScreen from "../screens/ParametresScreen";
 import {Context} from "react";
+import {AjoutTacheScreen} from "../screens/AjoutTacheScreen";
 
 const BottomTab = createBottomTabNavigator<BottomTabParamList>();
 
@@ -69,11 +70,16 @@ const ListesStack = createStackNavigator<ListesParamList>();
 
 function ListesNavigator() {
   return (
-    <ListesStack.Navigator>
+    <ListesStack.Navigator initialRouteName={"ListesScreen"}>
       <ListesStack.Screen
         name="ListesScreen"
         component={ListesScreen}
         options={{ headerTitle: 'Mes listes' }}
+      />
+      <ListesStack.Screen
+          name="AjoutTacheScreen"
+          component={AjoutTacheScreen}
+          options={{ headerTitle: 'Ajouter une tâche' }}
       />
     </ListesStack.Navigator>
   );
