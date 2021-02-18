@@ -1,6 +1,6 @@
-import * as React from 'react';
-//import DeviceInfo from 'react-native-device-info';
+import * as React from "react";
 
+//import DeviceInfo from 'react-native-device-info';
 
 /**
  * This function is supposed to get the name of the device,
@@ -9,11 +9,11 @@ import * as React from 'react';
  */
 
 function getTokenBearerName() {
-    const [deviceName, setDeviceName] = React.useState("Device");
+  const [deviceName, setDeviceName] = React.useState("Device");
 
-    // Load any resources or data that we need prior to rendering the app
-    React.useEffect(() => {
-        /*
+  // Load any resources or data that we need prior to rendering the app
+  React.useEffect(() => {
+    /*
         async function getDeviceInfo() {
             try {
                 DeviceInfo.getDeviceName().then((deviceName) => {
@@ -26,9 +26,9 @@ function getTokenBearerName() {
 
         getDeviceInfo()
         */
-    }, []);
+  }, []);
 
-    return deviceName;
+  return deviceName;
 }
 
 export default getTokenBearerName;

@@ -14,7 +14,7 @@ import {AjoutTacheScreen} from "../screens/AjoutTacheScreen";
 
 const BottomTab = createBottomTabNavigator<BottomTabParamList>();
 
-export default function BottomTabNavigator({authContext} : {authContext:Context<any>}) {
+export default function BottomTabNavigator() {
   const colorScheme = useColorScheme();
 
   return (
@@ -38,7 +38,7 @@ export default function BottomTabNavigator({authContext} : {authContext:Context<
       <BottomTab.Screen name="Paramètres" options={{
           tabBarIcon: ({ color }) => <TabBarIcon name="ios-settings" color={color} />,
       }}>
-          {(props) => <ParametresNavigator authContext={authContext} />}
+          {(props) => <ParametresNavigator/>}
       </BottomTab.Screen>
     </BottomTab.Navigator>
   );
@@ -87,12 +87,12 @@ function ListesNavigator() {
 
 const ParametresStack = createStackNavigator<ParametresParamList>();
 
-function ParametresNavigator({authContext}: {authContext: Context<any>}) {
+function ParametresNavigator() {
     return (
         <ParametresStack.Navigator>
-            <ParametresStack.Screen name='ParametresScreen' options={{ headerTitle: 'Paramètres' }}>
-                {(props) => <ParametresScreen authContext={authContext} />}
-            </ParametresStack.Screen>
+            <ParametresStack.Screen name='ParametresScreen'
+                                    component={ParametresScreen}
+                                    options={{ headerTitle: 'Paramètres' }}/>
         </ParametresStack.Navigator>
     );
 }
