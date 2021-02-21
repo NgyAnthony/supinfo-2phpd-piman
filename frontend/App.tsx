@@ -1,17 +1,20 @@
-import { StatusBar } from "expo-status-bar";
 import * as React from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import { StatusBar } from "expo-status-bar";
+import { Alert } from "react-native";
 
 import useCachedResources from "./hooks/ui/useCachedResources";
 import useColorScheme from "./hooks/ui/useColorScheme";
 import Navigation from "./navigation";
 import getTokenBearerName from "./hooks/auth/getTokenBearerName";
+
 import { LoginScreen } from "./screens/LoginScreen";
+import { InscriptionScreen } from "./screens/InscriptionScreen";
+
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import { InscriptionScreen } from "./screens/InscriptionScreen";
-import { Alert } from "react-native";
+import { TodolistsProvider } from "./store/TodolistsStore";
 
 /**
  * AuthContext is used to provide a memo that can be called from screens
@@ -125,6 +128,12 @@ export default function App() {
     })();
   };
 
+  /**
+   * Register a user
+   * @param name
+   * @param email
+   * @param password
+   */
   const register = (name: string, email: string, password: string) => {
     (async () => {
       const rawResponse = await fetch("http://127.0.0.1:8000/api/register", {
@@ -191,12 +200,14 @@ export default function App() {
     return null;
   } else {
     return (
-      <AuthContext.Provider value={authContext}>
-        <SafeAreaProvider>
-          {state.userToken == null ? loginStack : app}
-          <StatusBar />
-        </SafeAreaProvider>
-      </AuthContext.Provider>
+      <TodolistsProvider>
+        <AuthContext.Provider value={authContext}>
+          <SafeAreaProvider>
+            {state.userToken == null ? loginStack : app}
+            <StatusBar />
+          </SafeAreaProvider>
+        </AuthContext.Provider>
+      </TodolistsProvider>
     );
   }
 }

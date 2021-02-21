@@ -2,32 +2,24 @@ import * as React from "react";
 import {
   Alert,
   Button,
-  DevSettings,
   FlatList,
   RefreshControl,
-  SafeAreaView,
-  ScrollView,
   StyleSheet,
 } from "react-native";
 
 import { Text, View } from "../components/Themed";
 import getTokenBearer from "../hooks/auth/getTokenBearer";
-import {
-  User,
-  Task,
-  TodolistInterface,
-} from "../interfaces/TodolistsInterface";
+import { Task, TodolistInterface } from "../interfaces/TodolistsInterface";
 import { useNavigation } from "@react-navigation/native";
-import { LoginScreen } from "./LoginScreen";
+import { TodolistsContext } from "../store/TodolistsStore";
+import { useContext } from "react";
 
 const wait = (timeout: number) => {
   return new Promise((resolve) => setTimeout(resolve, timeout));
 };
 
 export default function ListesScreen() {
-  const [todolists, setTodolists] = React.useState<
-    TodolistInterface[] | undefined
-  >();
+  const [{ todolists }, dispatch]: any = useContext(TodolistsContext);
   const token = getTokenBearer();
   const [refreshing, setRefreshing] = React.useState(false);
   const navigation = useNavigation();
@@ -39,7 +31,7 @@ export default function ListesScreen() {
   }, []);
 
   async function fetchTodolists() {
-    console.log("Fetch called !");
+    console.log("Fetch todolists called...");
     const rawResponse = await fetch("http://127.0.0.1:8000/api/get-todolists", {
       method: "GET",
       headers: {
@@ -51,7 +43,13 @@ export default function ListesScreen() {
 
     if (rawResponse.ok) {
       const resp = await rawResponse.json();
-      setTodolists(resp.data);
+      console.log("Fetch success. Bearer is " + token);
+      dispatch({
+        type: "update",
+        newTodolists: resp.data,
+      });
+    } else {
+      console.log("Failed ! Bearer is " + token);
     }
   }
 
