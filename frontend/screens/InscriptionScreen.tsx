@@ -3,7 +3,7 @@ import * as React from "react";
 import { Text, View } from "../components/Themed";
 import { Button, Image, StyleSheet, TextInput } from "react-native";
 
-import { AuthContext } from "../App";
+import { AuthContext } from "../store/AuthStore";
 import { useNavigation } from "@react-navigation/native";
 
 // @ts-ignore

@@ -2,7 +2,7 @@ import * as React from "react";
 import { Button, StyleSheet } from "react-native";
 
 import { View } from "../components/Themed";
-import { AuthContext } from "../App";
+import { AuthContext } from "../store/AuthStore";
 
 export default function ParametresScreen() {
   // @ts-ignore

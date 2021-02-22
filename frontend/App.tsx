@@ -15,11 +15,7 @@ import { InscriptionScreen } from "./screens/InscriptionScreen";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { TodolistsProvider } from "./store/TodolistsStore";
-
-/**
- * AuthContext is used to provide a memo that can be called from screens
- */
-export const AuthContext = React.createContext({});
+import { AuthContext } from "./store/AuthStore";
 
 // @ts-ignore
 export default function App() {
