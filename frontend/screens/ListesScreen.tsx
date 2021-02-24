@@ -28,7 +28,7 @@ export default function ListesScreen() {
     setRefreshing(true);
     fetchTodolists();
     wait(1000).then(() => setRefreshing(false));
-  }, []);
+  }, [token]);
 
   async function fetchTodolists() {
     console.log("Fetch todolists called...");
