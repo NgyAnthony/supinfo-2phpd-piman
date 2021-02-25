@@ -23,7 +23,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::post('/token', [AuthController::class, 'requestToken']);
 Route::post('/register', [AuthController::class, 'store']);
-Route::middleware('auth:sanctum')->post('/add-todolist', [TodolistController::class, 'store']);
+Route::middleware('auth:sanctum')->post('/create-todolist', [TodolistController::class, 'store']);
 Route::middleware('auth:sanctum')->post('/deactivate-task', [TaskController::class, 'deactivateTask']);
 Route::middleware('auth:sanctum')->post('/create-task', [TaskController::class, 'create']);
 Route::middleware('auth:sanctum')->get('/get-todolists', [TodolistController::class, 'index']);

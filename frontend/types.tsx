@@ -10,14 +10,15 @@ export type BottomTabParamList = {
 };
 
 export type AccueilParamList = {
-    AccueilScreen: undefined;
+  AccueilScreen: undefined;
 };
 
 export type ListesParamList = {
-    ListesScreen: undefined;
-    AjoutTacheScreen: undefined;
+  ListesScreen: undefined;
+  AjoutTacheScreen: undefined;
+  AjoutTodolistScreen: undefined;
 };
 
 export type ParametresParamList = {
-    ParametresScreen: undefined;
+  ParametresScreen: undefined;
 };

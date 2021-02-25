@@ -13,9 +13,4 @@ class TodolistTask extends Model
         'title', 'description',
         'active', 'tag', 'archived', 'todolist_id'
     ];
-
-    public function taskusers()
-    {
-        return $this->hasMany(TaskUsers::class, 'task_id');
-    }
 }

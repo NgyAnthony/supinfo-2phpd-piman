@@ -51,18 +51,19 @@ class TodolistController extends Controller
     {
         $this->validate($request, [
             'title' => 'required',
-            'archived' => 'required',
         ]);
 
         $todolist = new Todolist;
         $todolist->title = $request->title;
-        $todolist->archived = $request->archived;
+        $todolist->archived = false;
         $todolist->save();
 
         $todolistusers = new TodolistUsers;
         $todolistusers->user_id = $request->user()->id;
         $todolistusers->todolist_id = $todolist->id;
-        $todolistusers->role = "Admin";
+        $todolistusers->read = true;
+        $todolistusers->write = true;
+        $todolistusers->owner = true;
         $todolistusers->save();
 
         return new TodolistResource($todolist);

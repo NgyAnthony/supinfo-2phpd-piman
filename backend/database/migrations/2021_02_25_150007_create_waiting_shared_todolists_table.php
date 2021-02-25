@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTodolistUsersTable extends Migration
+class CreateWaitingSharedTodolistsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,19 +13,16 @@ class CreateTodolistUsersTable extends Migration
      */
     public function up()
     {
-        Schema::create('todolist_users', function (Blueprint $table) {
+        Schema::create('waiting_shared_todolists', function (Blueprint $table) {
             $table->id();
-            // Don't forget to use same type on ID and FK
+            $table->timestamps();
             $table->bigInteger('user_id')->unsigned()->index();
             $table->bigInteger('todolist_id')->unsigned()->index();
-            $table->boolean('owner');
             $table->boolean('read');
             $table->boolean('write');
-            $table->timestamps();
-
         });
 
-        Schema::table('todolist_users', function($table) {
+        Schema::table('waiting_shared_todolists', function($table) {
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('todolist_id')->references('id')->on('todolists');
         });
@@ -38,6 +35,6 @@ class CreateTodolistUsersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('todolist_users');
+        Schema::dropIfExists('waiting_shared_todolists');
     }
 }
