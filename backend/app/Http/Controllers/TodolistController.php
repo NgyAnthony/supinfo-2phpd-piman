@@ -9,14 +9,12 @@ use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Http\Response;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
 class TodolistController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Show all todolists the user is allowed to read
      *
      * @return AnonymousResourceCollection
      */
@@ -24,24 +22,14 @@ class TodolistController extends Controller
     {
         $userId = $request->user()->id;
         $todolists = Todolist::whereHas('TodolistUsers', function($q) use($userId) {
-            $q->where('user_id', $userId);
+            $q->where('user_id', $userId)->where('read', true);
         })->get();
 
         return TodolistResource::collection($todolists);
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
+     * Create a new todolist
      *
      * @param Request $request
      * @return TodolistResource
@@ -70,18 +58,7 @@ class TodolistController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param Todolist $todolist
-     * @return TodolistResource
-     */
-    public function show(Todolist $todolist): TodolistResource
-    {
-        return new TodolistResource($todolist);
-    }
-
-    /**
-     * Update the specified resource in storage.
+     * Update todolist
      *
      * @param Request $request
      * @return TodolistResource|JsonResponse
@@ -100,7 +77,7 @@ class TodolistController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove todolist
      *
      * @param Request $request
      * @param Todolist $todolist
@@ -111,9 +88,9 @@ class TodolistController extends Controller
     {
         if($todolist->todolistusers()->user_id !== $request->user()->id){
             return response()->json(['error' => 'You can only delete your own Todolist.'], 403);
+        } else {
+            $todolist->delete();
+            return response()->json(null,204);
         }
-
-        $todolist->delete();
-        return response()->json(null,204);
     }
 }
