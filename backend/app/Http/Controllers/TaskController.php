@@ -2,12 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\TodolistResource;
 use App\Http\Resources\TaskResource;
 use App\Models\TaskUsers;
 use App\Models\Todolist;
 use App\Models\TodolistTask;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class TaskController extends Controller
@@ -17,52 +15,81 @@ class TaskController extends Controller
      * Update the specified resource in storage.
      *
      * @param Request $request
-     * @return TaskResource
      */
     public function deactivateTask(Request $request)
     {
+        // Requirements
+        $this->validate($request, [
+            'task_id' => 'required',
+            'todolist_id' => 'required',
+        ]);
+
         $userId = $request->user()->id;
-        $task_id = $request->task_id;
+        $taskId = $request->task_id;
+        $todolistId = $request->todolist_id;
 
-        $task = TodolistTask::whereHas('taskusers', function($q) use($userId, $task_id) {
-            $q->where('user_id', $userId)
-                ->where('task_id', $task_id);
-        })->first();
+        $hasAuthority = $this->checkAuthority($userId, $todolistId);
 
-        $task->active = 0;
+        if ($hasAuthority){
+            $task = TodolistTask::find($taskId);
+            $task->active = 0;
+            $task->save();
 
-        $task->save();
-        return new TaskResource($task);
+            return new TaskResource($task);
+        } else {
+            return response()->json(null,204);
+        }
+    }
+
+    private function checkAuthority($userId, $todolistId): bool
+    {
+        return Todolist::whereHas('TodolistUsers',
+            function($q) use($todolistId, $userId) {
+                $q->where('user_id', $userId)->where('todolist_id', $todolistId);
+            })->count() == 1;
     }
 
     public function create(Request $request)
     {
+        //TODO: Check if user has authority over todolist ID before
+
+        // Requirements
         $this->validate($request, [
             'title' => 'required',
             'todolist_id' => 'required',
         ]);
 
-        $task = new TodolistTask;
-        $task->title = $request->title;
+        $userId = $request->user()->id;
+        $todolistId = $request->todolist_id;
 
-        if(!empty($request->description)) {
-            $task->description = $request->description;
+        $hasAuthority = $this->checkAuthority($userId, $todolistId);
+
+        if($hasAuthority){
+            // Create object
+            $task = new TodolistTask;
+            // Set title
+            $task->title = $request->title;
+
+            // Set description and tag
+            if(!empty($request->description)) {
+                $task->description = $request->description;
+            }
+
+            if(!empty($task->tag = $request->tag)){
+                $task->tag = $request->tag;
+            }
+
+            // Set non-archived and active by default
+            $task->archived = 0;
+            $task->active = 1;
+
+            // Add foreign key of todolist to task
+            $task->todolist_id = $todolistId;
+            $task->save();
+
+            return new TaskResource($task);
+        } else {
+            return response()->json(null,204);
         }
-
-        if(!empty($task->tag = $request->tag)){
-            $task->tag = $request->tag;
-        }
-
-        $task->archived = 0;
-        $task->active = 1;
-        $task->todolist_id = $request->todolist_id;
-        $task->save();
-
-        $taskusers = new TaskUsers;
-        $taskusers->user_id = $request->user()->id;
-        $taskusers->task_id = $task->id;
-        $taskusers->save();
-
-        return new TaskResource($task);
     }
 }

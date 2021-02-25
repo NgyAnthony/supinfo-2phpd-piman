@@ -10,7 +10,7 @@ import {
 import { Text, View } from "../components/Themed";
 import getTokenBearer from "../hooks/auth/getTokenBearer";
 import { Task, TodolistInterface } from "../interfaces/TodolistsInterface";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { TodolistsContext } from "../store/TodolistsStore";
 import { useContext } from "react";
 
@@ -28,6 +28,10 @@ export default function ListesScreen() {
     setRefreshing(true);
     fetchTodolists();
     wait(1000).then(() => setRefreshing(false));
+  }, [token]);
+
+  const onPageFocus = React.useCallback(() => {
+    fetchTodolists();
   }, [token]);
 
   async function fetchTodolists() {
@@ -53,9 +57,7 @@ export default function ListesScreen() {
     }
   }
 
-  React.useEffect(() => {
-    fetchTodolists();
-  }, [token]);
+  useFocusEffect(onPageFocus);
 
   const taskEnded = async (todolistId: any, taskId: any) => {
     const rawResponse = await fetch(
