@@ -16,7 +16,7 @@ export function AjoutTacheScreen({ route }) {
   const token = getTokenBearer();
 
   const createTask = async () => {
-    const rawResponse = await fetch("http://127.0.0.1:8000/api/create-task", {
+    const rawResponse = await fetch("http://127.0.0.1:8000/api/task/create", {
       method: "POST",
       headers: {
         Accept: "application/json",

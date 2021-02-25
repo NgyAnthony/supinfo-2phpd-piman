@@ -10,7 +10,15 @@ class WaitingSharedTodolistController extends Controller
     /**
      * Send the R/W permission to a todolist
      */
-    public function sendSharedAuthorization(Request $request)
+    public function sendAuthorization(Request $request)
+    {
+        //
+    }
+
+    /**
+     * Send the awaiting authorizations
+     */
+    public function showAwaiting(Request $request)
     {
         //
     }

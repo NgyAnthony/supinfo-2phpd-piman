@@ -13,7 +13,7 @@ export function AjoutTodolistScreen() {
 
   const createTodolist = async () => {
     const rawResponse = await fetch(
-      "http://127.0.0.1:8000/api/create-todolist",
+      "http://127.0.0.1:8000/api/todolist/create",
       {
         method: "POST",
         headers: {

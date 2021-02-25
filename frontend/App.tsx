@@ -100,7 +100,7 @@ export default function App() {
    */
   const login = (email: string, password: string, deviceName: string) => {
     (async () => {
-      const rawResponse = await fetch("http://127.0.0.1:8000/api/token", {
+      const rawResponse = await fetch("http://127.0.0.1:8000/api/auth/token", {
         method: "POST",
         headers: {
           Accept: "application/json",
@@ -132,18 +132,21 @@ export default function App() {
    */
   const register = (name: string, email: string, password: string) => {
     (async () => {
-      const rawResponse = await fetch("http://127.0.0.1:8000/api/register", {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: name,
-          email: email,
-          password: password,
-        }),
-      });
+      const rawResponse = await fetch(
+        "http://127.0.0.1:8000/api/auth/register",
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name: name,
+            email: email,
+            password: password,
+          }),
+        }
+      );
       if (rawResponse.ok) {
         // Get token
         Alert.alert("Inscription réussie ! Redirection vers l'appli...");

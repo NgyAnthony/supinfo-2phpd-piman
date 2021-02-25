@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\WaitingFriend;
 use Illuminate\Http\Request;
 
@@ -12,7 +13,7 @@ class WaitingFriendController extends Controller
      */
     public function findUserByEmail(Request $request)
     {
-        //
+        return User::where('email', $request->email)->first();
     }
 
     /**

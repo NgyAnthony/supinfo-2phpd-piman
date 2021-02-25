@@ -1,7 +1,10 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\FriendController;
 use App\Http\Controllers\TaskController;
+use App\Http\Controllers\WaitingFriendController;
+use App\Http\Controllers\WaitingSharedTodolistController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TodolistController;
@@ -21,9 +24,32 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('/token', [AuthController::class, 'requestToken']);
-Route::post('/register', [AuthController::class, 'store']);
-Route::middleware('auth:sanctum')->post('/create-todolist', [TodolistController::class, 'store']);
-Route::middleware('auth:sanctum')->post('/deactivate-task', [TaskController::class, 'deactivateTask']);
-Route::middleware('auth:sanctum')->post('/create-task', [TaskController::class, 'create']);
-Route::middleware('auth:sanctum')->get('/get-todolists', [TodolistController::class, 'index']);
+// Authentication
+Route::post('/auth/token', [AuthController::class, 'requestToken']);
+Route::post('/auth/register', [AuthController::class, 'store']);
+
+// Todolists
+Route::middleware('auth:sanctum')->get('/todolist/show', [TodolistController::class, 'index']);
+Route::middleware('auth:sanctum')->post('/todolist/create', [TodolistController::class, 'store']);
+
+// Tasks
+Route::middleware('auth:sanctum')->post('/task/deactivate', [TaskController::class, 'deactivateTask']);
+Route::middleware('auth:sanctum')->post('/task/create', [TaskController::class, 'create']);
+
+// Friends
+// Requests
+Route::middleware('auth:sanctum')->post('/friend-request/find', [WaitingFriendController::class, 'findUserByEmail']);
+Route::middleware('auth:sanctum')->post('/friend-request/show', [WaitingFriendController::class, 'showFriendRequests']);
+Route::middleware('auth:sanctum')->post('/friend-request/send', [WaitingFriendController::class, 'sendFriendRequest']);
+Route::middleware('auth:sanctum')->post('/friend-request/accept', [WaitingFriendController::class, 'acceptFriendRequest']);
+Route::middleware('auth:sanctum')->post('/friend-request/refuse', [WaitingFriendController::class, 'refuseFriendRequest']);
+// Current
+Route::middleware('auth:sanctum')->post('/friends/show', [FriendController::class, 'showFriends']);
+Route::middleware('auth:sanctum')->post('/friends/remove', [FriendController::class, 'removeFriends']);
+
+// Sharing
+Route::middleware('auth:sanctum')->post('/share/send', [WaitingSharedTodolistController::class, 'sendAuthorization']);
+Route::middleware('auth:sanctum')->post('/share/show', [WaitingSharedTodolistController::class, 'showAwaiting']);
+Route::middleware('auth:sanctum')->post('/share/accept', [WaitingSharedTodolistController::class, 'acceptAuthorization']);
+Route::middleware('auth:sanctum')->post('/share/refuse', [WaitingSharedTodolistController::class, 'refuseAuthorization']);
+

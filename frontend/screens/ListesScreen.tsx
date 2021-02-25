@@ -36,7 +36,7 @@ export default function ListesScreen() {
 
   async function fetchTodolists() {
     console.log("Fetch todolists called...");
-    const rawResponse = await fetch("http://127.0.0.1:8000/api/get-todolists", {
+    const rawResponse = await fetch("http://127.0.0.1:8000/api/todolist/show", {
       method: "GET",
       headers: {
         Accept: "application/json",
@@ -61,7 +61,7 @@ export default function ListesScreen() {
 
   const taskEnded = async (todolistId: any, taskId: any) => {
     const rawResponse = await fetch(
-      "http://127.0.0.1:8000/api/deactivate-task",
+      "http://127.0.0.1:8000/api/task/deactivate",
       {
         method: "POST",
         headers: {
