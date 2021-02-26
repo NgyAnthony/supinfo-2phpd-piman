@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\WaitingFriendResource;
 use App\Models\User;
 use App\Models\WaitingFriend;
 use Illuminate\Http\Request;
@@ -17,11 +18,23 @@ class WaitingFriendController extends Controller
     }
 
     /**
-     * Show list of friend requests
+     * Show a list of received friend requests
      */
-    public function showFriendRequests(Request $request)
+    public function showReceivedFriendRequests(Request $request)
     {
-        //
+        $userId = $request->user()->id;
+        $receivedReq = WaitingFriend::where('user_target', $userId)->get();
+        return WaitingFriendResource::collection($receivedReq);
+    }
+
+    /**
+     * Show a list of sent friend requests
+     */
+    public function showSentFriendRequests(Request $request)
+    {
+        $userId = $request->user()->id;
+        $receivedReq = WaitingFriend::where('user_initiator', $userId)->get();
+        return WaitingFriendResource::collection($receivedReq);
     }
 
 
@@ -30,7 +43,16 @@ class WaitingFriendController extends Controller
      */
     public function sendFriendRequest(Request $request)
     {
-        //
+        $this->validate($request, [
+            'friend_id' => 'required',
+        ]);
+
+        $friendReq = new WaitingFriend;
+        $friendReq->user_target = $request->friend_id;
+        $friendReq->user_initiator = $request->user()->id;
+        $friendReq->save();
+
+        return response()->json(null,204);
     }
 
     /**

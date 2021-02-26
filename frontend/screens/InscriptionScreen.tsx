@@ -28,6 +28,7 @@ export function InscriptionScreen() {
         <TextInput
           style={styles.textInput}
           placeholder="Nom"
+          textContentType={"name"}
           onChangeText={(text) => setName(text)}
           value={name}
         />
@@ -35,6 +36,7 @@ export function InscriptionScreen() {
         <TextInput
           style={styles.textInput}
           placeholder="Email"
+          textContentType={"emailAddress"}
           onChangeText={(text) => setEmail(text)}
           value={email}
         />
@@ -43,6 +45,7 @@ export function InscriptionScreen() {
           style={styles.textInput}
           placeholder="Mot de passe"
           secureTextEntry={true}
+          textContentType={"password"}
           onChangeText={(text) => setPassword(text)}
           value={password}
         />

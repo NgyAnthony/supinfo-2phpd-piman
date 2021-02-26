@@ -30,6 +30,7 @@ export function LoginScreen() {
         <TextInput
           style={styles.textInput}
           placeholder="Email"
+          textContentType={"emailAddress"}
           onChangeText={(text) => setEmail(text)}
           value={email}
         />
@@ -38,6 +39,7 @@ export function LoginScreen() {
           style={styles.textInput}
           placeholder="Mot de passe"
           secureTextEntry={true}
+          textContentType={"password"}
           onChangeText={(text) => setPassword(text)}
           value={password}
         />

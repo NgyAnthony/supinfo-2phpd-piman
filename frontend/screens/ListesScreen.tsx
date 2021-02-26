@@ -47,13 +47,13 @@ export default function ListesScreen() {
 
     if (rawResponse.ok) {
       const resp = await rawResponse.json();
-      console.log("Fetch success. Bearer is " + token);
+      console.log("Fetch todolist success.");
       dispatch({
         type: "update",
         newTodolists: resp.data,
       });
     } else {
-      console.log("Failed ! Bearer is " + token);
+      console.log("Failed ! Can't fetch todolists." + rawResponse.status);
     }
   }
 
