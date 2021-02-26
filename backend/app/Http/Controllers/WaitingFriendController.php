@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\WaitingFriendResource;
+use App\Models\Friend;
 use App\Models\User;
 use App\Models\WaitingFriend;
 use Illuminate\Http\Request;
@@ -60,7 +61,14 @@ class WaitingFriendController extends Controller
      */
     public function refuseFriendRequest(Request $request)
     {
-        //
+        $this->validate($request, [
+            'friend_request_id' => 'required',
+        ]);
+
+        $friendRequestId = $request->friend_request_id;
+        $friendRequest = WaitingFriend::find($friendRequestId);
+        $friendRequest->delete();
+        return response()->json(null,204);
     }
 
     /**
@@ -68,6 +76,19 @@ class WaitingFriendController extends Controller
      */
     public function acceptFriendRequest(Request $request)
     {
-        //
+        $this->validate($request, [
+            'friend_request_id' => 'required',
+        ]);
+
+        $friendRequestId = $request->friend_request_id;
+        $friendRequest = WaitingFriend::find($friendRequestId);
+
+        $friendRel = new Friend;
+        $friendRel->user_target = $friendRequest->user_target;
+        $friendRel->user_initiator = $friendRequest->user_initiator;
+        $friendRel->save();
+
+        $friendRequest->delete();
+        return response()->json(null,204);
     }
 }

@@ -1,21 +1,22 @@
 import * as React from "react";
 import {
   Alert,
-  Button,
   StyleSheet,
   TextInput,
   RefreshControl,
   FlatList,
 } from "react-native";
-import { Text, Icon, ListItem } from "react-native-elements";
+import { Button, Text, Icon, ListItem } from "react-native-elements";
 
 import { View } from "../components/Themed";
 import { AuthContext } from "../store/AuthStore";
 import getTokenBearer from "../hooks/auth/getTokenBearer";
 import { useFocusEffect } from "@react-navigation/native";
 import { SentFriendRequestInterface } from "../interfaces/SentFriendRequestInterface";
+import { FriendRecord } from "../interfaces/FriendsInterface";
 
 export default function ParametresScreen() {
+  const token = getTokenBearer();
   // @ts-ignore
   const { signOut } = React.useContext(AuthContext);
   const [friendEmail, setFriendEmail] = React.useState("");
@@ -24,7 +25,7 @@ export default function ParametresScreen() {
   });
   const [validEmail, setValidEmail] = React.useState(false);
   const [sentFriendRequests, setSentFriendRequests] = React.useState([]);
-  const token = getTokenBearer();
+  const [friends, setFriends] = React.useState([]);
 
   /**
    * Set local properties to default
@@ -87,6 +88,8 @@ export default function ParametresScreen() {
     );
 
     if (rawResponse.ok) {
+      resetFriend();
+      setFriendEmail("");
       Alert.alert("Demande envoyée !");
     } else {
       Alert.alert("Erreur ! La demande n'a pas pu être envoyée.");
@@ -130,8 +133,57 @@ export default function ParametresScreen() {
     }
   };
 
+  /**
+   * Get the friendlist
+   */
+  const getFriendlist = async () => {
+    console.log("Fetch friendlist...");
+    const rawResponse = await fetch("http://127.0.0.1:8000/api/friends/show", {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token,
+      },
+    });
+
+    if (rawResponse.ok) {
+      console.log("Fetch friendlist success.");
+      const resp = await rawResponse.json();
+      setFriends(resp.data);
+    } else {
+      console.log(
+        "Failed to fetch friendlist !" + rawResponse.status.toString()
+      );
+    }
+  };
+
+  const deleteFriend = async (friendshipId: number) => {
+    const rawResponse = await fetch(
+      "http://127.0.0.1:8000/api/friends/remove",
+      {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token,
+        },
+        body: JSON.stringify({
+          friendship_id: friendshipId,
+        }),
+      }
+    );
+
+    if (rawResponse.ok) {
+      getFriendlist();
+    } else {
+      Alert.alert("Echec de la requête !" + rawResponse.status);
+    }
+  };
+
   const onPageFocus = React.useCallback(() => {
     getRequestsSent();
+    getFriendlist();
   }, [token]);
 
   useFocusEffect(onPageFocus);
@@ -141,6 +193,30 @@ export default function ParametresScreen() {
       style={[styles.container, styles.centerItems, styles.containerPadding]}
     >
       <View style={[styles.fullWidth]}>
+        <Text h4>Mes amis</Text>
+
+        {friends.length >= 1 ? (
+          friends.map((l: FriendRecord, i) => (
+            <ListItem key={i} bottomDivider>
+              <Icon name={"user"} type="antdesign" />
+              <ListItem.Content>
+                <ListItem.Title>{l.friend.email}</ListItem.Title>
+                <ListItem.Subtitle>{l.friend.name}</ListItem.Subtitle>
+              </ListItem.Content>
+              <View>
+                <Button
+                  onPress={() => deleteFriend(l.id)}
+                  type={"outline"}
+                  title={"Retirer l'ami"}
+                />
+              </View>
+            </ListItem>
+          ))
+        ) : (
+          <Text>Aucun ami.</Text>
+        )}
+      </View>
+      <View style={[styles.fullWidth, styles.wrapperMarginTop]}>
         <Text h4>Ajouter un ami</Text>
         <TextInput
           style={styles.textInput}
@@ -157,16 +233,20 @@ export default function ParametresScreen() {
       <View style={[styles.fullWidth, styles.wrapperMarginTop]}>
         <Text h4>Liste des requêtes d'ami</Text>
 
-        {sentFriendRequests.map((l: SentFriendRequestInterface, i) => (
-          <ListItem key={i} bottomDivider>
-            <Icon name={"user"} type="antdesign" />
-            <ListItem.Content>
-              <ListItem.Title>{l.user_target.email}</ListItem.Title>
-              <ListItem.Subtitle>{l.user_target.name}</ListItem.Subtitle>
-              <ListItem.Subtitle>Demande d'ami envoyée.</ListItem.Subtitle>
-            </ListItem.Content>
-          </ListItem>
-        ))}
+        {sentFriendRequests.length >= 1 ? (
+          sentFriendRequests.map((l: SentFriendRequestInterface, i) => (
+            <ListItem key={i} bottomDivider>
+              <Icon name={"user"} type="antdesign" />
+              <ListItem.Content>
+                <ListItem.Title>{l.user_target.email}</ListItem.Title>
+                <ListItem.Subtitle>{l.user_target.name}</ListItem.Subtitle>
+                <ListItem.Subtitle>Demande d'ami envoyée.</ListItem.Subtitle>
+              </ListItem.Content>
+            </ListItem>
+          ))
+        ) : (
+          <Text>Aucune requête envoyée.</Text>
+        )}
       </View>
       <View style={[styles.fullWidth, styles.wrapperMarginTop]}>
         <Text h4>Mon compte</Text>
@@ -202,7 +282,7 @@ const styles = StyleSheet.create({
     width: "80%",
   },
   textInput: {
-    height: 50,
-    width: 250,
+    width: "100%",
+    height: 40,
   },
 });

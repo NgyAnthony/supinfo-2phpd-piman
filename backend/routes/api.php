@@ -46,7 +46,7 @@ Route::middleware('auth:sanctum')->post('/friend-request/accept', [WaitingFriend
 Route::middleware('auth:sanctum')->post('/friend-request/refuse', [WaitingFriendController::class, 'refuseFriendRequest']);
 // Current
 Route::middleware('auth:sanctum')->get('/friends/show', [FriendController::class, 'showFriends']);
-Route::middleware('auth:sanctum')->post('/friends/remove', [FriendController::class, 'removeFriends']);
+Route::middleware('auth:sanctum')->post('/friends/remove', [FriendController::class, 'removeFriend']);
 
 // Sharing
 Route::middleware('auth:sanctum')->post('/share/send', [WaitingSharedTodolistController::class, 'sendAuthorization']);

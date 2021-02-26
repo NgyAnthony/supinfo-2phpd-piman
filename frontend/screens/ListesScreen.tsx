@@ -1,11 +1,5 @@
 import * as React from "react";
-import {
-  Alert,
-  Button,
-  FlatList,
-  RefreshControl,
-  StyleSheet,
-} from "react-native";
+import { Alert, FlatList, RefreshControl, StyleSheet } from "react-native";
 
 import { Text, View } from "../components/Themed";
 import getTokenBearer from "../hooks/auth/getTokenBearer";
@@ -13,6 +7,7 @@ import { Task, TodolistInterface } from "../interfaces/TodolistsInterface";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { TodolistsContext } from "../store/TodolistsStore";
 import { useContext } from "react";
+import { Button } from "react-native-elements";
 
 const wait = (timeout: number) => {
   return new Promise((resolve) => setTimeout(resolve, timeout));
@@ -36,6 +31,7 @@ export default function ListesScreen() {
 
   async function fetchTodolists() {
     console.log("Fetch todolists called...");
+    console.log(token);
     const rawResponse = await fetch("http://127.0.0.1:8000/api/todolist/show", {
       method: "GET",
       headers: {
@@ -93,6 +89,7 @@ export default function ListesScreen() {
         </View>
         <View>
           <Button
+            type={"outline"}
             onPress={() => taskEnded(task.todolist_id, task.id)}
             title="Terminé"
           />
@@ -114,11 +111,15 @@ export default function ListesScreen() {
   const Item = ({ todolist }) => (
     <View style={styles.todolist}>
       <Text style={styles.title}>{todolist.title}</Text>
-      <FlatList
-        data={todolist.tasks}
-        renderItem={renderTask}
-        keyExtractor={(item) => item.id.toString()}
-      />
+      {todolist.tasks.length >= 1 ? (
+        <FlatList
+          data={todolist.tasks}
+          renderItem={renderTask}
+          keyExtractor={(item) => item.id.toString()}
+        />
+      ) : (
+        <Text>Aucune tâche</Text>
+      )}
 
       <Button
         onPress={() =>
@@ -140,15 +141,19 @@ export default function ListesScreen() {
         onPress={() => navigation.navigate("AjoutTodolistScreen")}
         title="Créer une todolist"
       />
-      <FlatList
-        contentContainerStyle={styles.todolistContainer}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
-        data={todolists}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id.toString()}
-      />
+      {todolists.length >= 1 ? (
+        <FlatList
+          contentContainerStyle={styles.todolistContainer}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+          data={todolists}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id.toString()}
+        />
+      ) : (
+        <Text>Aucune todolist.</Text>
+      )}
     </View>
   );
 }
@@ -158,10 +163,31 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "center",
+    padding: 20,
   },
   todolistContainer: {
     width: "100%",
   },
+  separator: {
+    marginVertical: 30,
+    height: 1,
+    width: "80%",
+  },
+
+  todolist: {
+    backgroundColor: "#ecf0f1",
+    padding: 20,
+    marginTop: 20,
+  },
+  task: {
+    padding: 6,
+    marginVertical: 6,
+  },
+  taskWrapper: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+
   title: {
     fontSize: 24,
     fontWeight: "bold",
@@ -172,25 +198,6 @@ const styles = StyleSheet.create({
   },
   regular: {
     fontSize: 14,
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: "80%",
-  },
-  todolist: {
-    backgroundColor: "#ecf0f1",
-    padding: 20,
-    marginVertical: 8,
-    marginHorizontal: 16,
-  },
-  task: {
-    padding: 6,
-    marginVertical: 6,
-  },
-  taskWrapper: {
-    flexDirection: "row",
-    justifyContent: "space-between",
   },
 });
 //endregion
