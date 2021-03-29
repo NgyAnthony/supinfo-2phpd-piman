@@ -17,6 +17,7 @@ import ParametresScreen from "../screens/ParametresScreen";
 import { Context } from "react";
 import { AjoutTacheScreen } from "../screens/AjoutTacheScreen";
 import { AjoutTodolistScreen } from "../screens/AjoutTodolistScreen";
+import { TodolistShareScreen } from "../screens/TodolistShareScreen";
 
 const BottomTab = createBottomTabNavigator<BottomTabParamList>();
 
@@ -100,7 +101,11 @@ function ListesNavigator() {
         component={AjoutTacheScreen}
         options={{ headerTitle: "Ajouter une tâche" }}
       />
-
+      <ListesStack.Screen
+        name="TodolistShareScreen"
+        component={TodolistShareScreen}
+        options={{ headerTitle: "Partager une todolist" }}
+      />
       <ListesStack.Screen
         name="AjoutTodolistScreen"
         component={AjoutTodolistScreen}

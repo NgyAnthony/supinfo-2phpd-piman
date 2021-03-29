@@ -19,17 +19,15 @@ class DatabaseSeeder extends Seeder
     {
         // \App\Models\User::factory(10)->create();
         $faker = Factory::create();
-        for ($i = 0; $i < 50; $i++) {
-            Todolist::create([
-                'title' => $faker->sentence,
-                'archived' => $faker->boolean,
-            ]);
-        }
         User::create([
             'name' => 'Alex',
             'email' => 'alex@alex.com',
             'password' => Hash::make('pwdpwd'),
         ]);
-
+        User::create([
+            'name' => 'Anthony',
+            'email' => 'anthony@anthony.com',
+            'password' => Hash::make('pwdpwd'),
+        ]);
     }
 }

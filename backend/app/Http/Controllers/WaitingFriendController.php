@@ -15,7 +15,9 @@ class WaitingFriendController extends Controller
      */
     public function findUserByEmail(Request $request)
     {
-        return User::where('email', $request->email)->first();
+        if($request->user()->email != $request->email){
+            return User::where('email', $request->email)->first();
+        }
     }
 
     /**
@@ -37,7 +39,6 @@ class WaitingFriendController extends Controller
         $receivedReq = WaitingFriend::where('user_initiator', $userId)->get();
         return WaitingFriendResource::collection($receivedReq);
     }
-
 
     /**
      * Send a friend request

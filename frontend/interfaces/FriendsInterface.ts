@@ -11,3 +11,10 @@ export interface FriendRecord {
   id: number;
   friend: Friend;
 }
+
+export interface FriendWithPermissions {
+  id: number;
+  friend: Friend;
+  read: boolean;
+  write: boolean;
+}

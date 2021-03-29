@@ -17,6 +17,7 @@ class CreateTodolistUsersTable extends Migration
             $table->id();
             // Don't forget to use same type on ID and FK
             $table->bigInteger('user_id')->unsigned()->index();
+            $table->bigInteger('shared_by_id')->unsigned()->index();
             $table->bigInteger('todolist_id')->unsigned()->index();
             $table->boolean('owner');
             $table->boolean('read');
@@ -27,6 +28,7 @@ class CreateTodolistUsersTable extends Migration
 
         Schema::table('todolist_users', function($table) {
             $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('shared_by_id')->references('id')->on('users');
             $table->foreign('todolist_id')->references('id')->on('todolists');
         });
     }

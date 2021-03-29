@@ -16,12 +16,13 @@ class TodolistUsersResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'user_id'=> $this->user_id,
-            'todolist_id'=> $this->todolist_id,
-            'role'=>$this->role,
+            'user_id'=> $this->objUser,
+            'todolist_id'=> $this->objTodolist,
+            'owner'=>$this->owner,
+            'read'=>$this->read,
+            'write'=>$this->write,
             'created_at' => (string) $this->created_at,
             'updated_at' => (string) $this->updated_at,
-            'todolist' => $this->todolist,
         ];
     }
 }

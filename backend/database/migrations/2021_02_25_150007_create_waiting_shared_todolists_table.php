@@ -17,6 +17,7 @@ class CreateWaitingSharedTodolistsTable extends Migration
             $table->id();
             $table->timestamps();
             $table->bigInteger('user_id')->unsigned()->index();
+            $table->bigInteger('shared_by_id')->unsigned()->index();
             $table->bigInteger('todolist_id')->unsigned()->index();
             $table->boolean('read');
             $table->boolean('write');
@@ -24,6 +25,7 @@ class CreateWaitingSharedTodolistsTable extends Migration
 
         Schema::table('waiting_shared_todolists', function($table) {
             $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('shared_by_id')->references('id')->on('users');
             $table->foreign('todolist_id')->references('id')->on('todolists');
         });
     }

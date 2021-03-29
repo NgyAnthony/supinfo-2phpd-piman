@@ -17,6 +17,7 @@ export type ListesParamList = {
   ListesScreen: undefined;
   AjoutTacheScreen: undefined;
   AjoutTodolistScreen: undefined;
+  TodolistShareScreen: undefined;
 };
 
 export type ParametresParamList = {

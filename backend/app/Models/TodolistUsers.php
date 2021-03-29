@@ -9,15 +9,18 @@ class TodolistUsers extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['role', 'email', 'user_id', 'todolist_id', 'owner', 'read', 'write'];
-
-    public function user()
+    public function objSharedById()
     {
-        return $this->hasMany(User::class);
+        return $this->belongsTo(User::class, 'shared_by_id');
     }
 
-    public function todolist()
+    public function objUser()
     {
-        return $this->belongsTo(Todolist::class);
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function objTodolist()
+    {
+        return $this->belongsTo(Todolist::class,'todolist_id');
     }
 }

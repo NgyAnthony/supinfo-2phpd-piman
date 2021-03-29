@@ -7,7 +7,7 @@ import { Task, TodolistInterface } from "../interfaces/TodolistsInterface";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { TodolistsContext } from "../store/TodolistsStore";
 import { useContext } from "react";
-import { Button } from "react-native-elements";
+import { Button, Divider } from "react-native-elements";
 
 const wait = (timeout: number) => {
   return new Promise((resolve) => setTimeout(resolve, timeout));
@@ -120,12 +120,22 @@ export default function ListesScreen() {
       ) : (
         <Text>Aucune tâche</Text>
       )}
-
       <Button
+        style={{ marginTop: 25 }}
         onPress={() =>
           navigation.navigate("AjoutTacheScreen", { todolist_id: todolist.id })
         }
         title="Ajouter une tâche"
+      />
+
+      <Button
+        style={{ marginTop: 10 }}
+        onPress={() =>
+          navigation.navigate("TodolistShareScreen", {
+            todolist_id: todolist.id,
+          })
+        }
+        title="Partager"
       />
     </View>
   );

@@ -90,6 +90,7 @@ export default function ParametresScreen() {
     if (rawResponse.ok) {
       resetFriend();
       setFriendEmail("");
+      getFriendlist();
       Alert.alert("Demande envoyée !");
     } else {
       Alert.alert("Erreur ! La demande n'a pas pu être envoyée.");
@@ -225,7 +226,9 @@ export default function ParametresScreen() {
           onChangeText={(text) => handleEmail(text)}
           value={friendEmail}
         />
-        {validEmail ? <Text>Ami trouvé !</Text> : null}
+        {validEmail ? (
+          <Text style={{ marginBottom: 5 }}>Ami trouvé !</Text>
+        ) : null}
 
         <Button onPress={sendFriendRequest} title="Envoyer" />
       </View>
