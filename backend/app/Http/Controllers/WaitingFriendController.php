@@ -48,13 +48,17 @@ class WaitingFriendController extends Controller
         $this->validate($request, [
             'friend_id' => 'required',
         ]);
-
-        $friendReq = new WaitingFriend;
-        $friendReq->user_target = $request->friend_id;
-        $friendReq->user_initiator = $request->user()->id;
-        $friendReq->save();
-
-        return response()->json(null,204);
+        $user_id = $request->user()->id;
+        $friend_id = $request->friend_id;
+        if ($user_id != $friend_id){
+            $friendReq = new WaitingFriend;
+            $friendReq->user_target = $friend_id;
+            $friendReq->user_initiator = $user_id;
+            $friendReq->save();
+            return response()->json(null,204);
+        } else {
+            return response()->json(null,403);
+        }
     }
 
     /**

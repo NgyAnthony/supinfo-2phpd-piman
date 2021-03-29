@@ -51,7 +51,6 @@ class FriendController extends Controller
 
         $friendship->delete();
 
-
         return response()->json(null,204);
     }
 }

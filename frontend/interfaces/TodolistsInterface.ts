@@ -2,6 +2,7 @@ export interface User {
   id: number;
   role: string;
   name: string;
+  email: string;
   user_id: number;
   todolist_id: number;
   created_at?: any;
@@ -32,4 +33,14 @@ export interface WaitingSharedTodolist {
   id: number;
   user: User;
   todolist: TodolistInterface;
+}
+
+export interface TodolistUsers {
+  id: number;
+  user: User;
+  sharedby: User;
+  todolist: TodolistInterface;
+  owner: boolean;
+  read: boolean;
+  write: boolean;
 }

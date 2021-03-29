@@ -69,16 +69,11 @@ class WaitingSharedTodolistController extends Controller
 
         // Check if user is allowed to send an authorization for this todolist
         $userId = $request->user()->id;
-        $todolists = Todolist::whereHas('TodolistUsers', function($q) use($userId) {
-            $q->where('user_id', $userId)->where('owner', false);
-        })->get();
+        $authTdl = TodolistUsers::where('shared_by_id', $userId)
+            ->where('owner', false)->get();
 
-
-        if (count($todolists) > 0){
-            $td_id = $request->todolist_id;
-            $tdusers = TodolistUsers::where('todolist_id', $td_id)->get();
-
-            return TodolistUsersResource::collection($tdusers);
+        if (count($authTdl) > 0){
+            return TodolistUsersResource::collection($authTdl);
         } else {
             return response()->json("No sharing found.",404);
         }
@@ -118,5 +113,29 @@ class WaitingSharedTodolistController extends Controller
     public function refuseAuthorization(Request $request)
     {
         //
+    }
+
+    public function updateAuthorization(Request $request)
+    {
+        $this->validate($request, [
+            'todolist_user_id' => 'required',
+            'read_auth' => 'required',
+            'write_auth' => 'required',
+        ]);
+        error_log($request->todolist_user_id);
+
+        $userId = $request->user()->id;
+        $tdlReqId = $request->todolist_user_id;
+        $tdlUser = TodolistUsers::find($tdlReqId);
+
+        // Check if the user has authority over the authorization record
+        if ($tdlUser->shared_by_id == $userId){
+            $tdlUser->read = $request->read_auth;
+            $tdlUser->write = $request->write_auth;
+            $tdlUser->save();
+            return response()->json(null,204);
+        } else {
+            return response()->json(null,403);
+        }
     }
 }

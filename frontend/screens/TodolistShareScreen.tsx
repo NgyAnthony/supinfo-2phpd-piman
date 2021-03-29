@@ -10,23 +10,18 @@ import {
 } from "../interfaces/FriendsInterface";
 import { CheckBox, Icon, ListItem } from "react-native-elements";
 import { Button } from "react-native-elements";
+import { TodolistUsers } from "../interfaces/TodolistsInterface";
 
 // @ts-ignore
 export function TodolistShareScreen({ route }) {
   const { todolist_id } = route.params;
   const [authorizedFriends, setAuthorizedFriends] = React.useState<
-    FriendWithPermissions[]
+    TodolistUsers[]
   >([]);
   const [friends, setFriends] = React.useState<FriendWithPermissions[]>([]);
 
   const navigation = useNavigation();
   const token = getTokenBearer();
-
-  // Todo:
-  //  - Get list of friends, when click on the friend, send the user with write and read permission
-  //  - Once he has accepted, you can set read and write permission and also revoke
-  //  - Get list of users with permission
-  //  - Other: Accept permissions to the todolist
 
   const onPageFocus = React.useCallback(() => {
     getFriendlist();
@@ -45,6 +40,18 @@ export function TodolistShareScreen({ route }) {
     const newFr = [...friends];
     newFr[id]["write"] = !newFr[id]["write"];
     setFriends(newFr); //set the new state
+  };
+
+  const switchReadModify = (id: number) => {
+    const newFr = [...authorizedFriends];
+    newFr[id]["read"] = !newFr[id]["read"];
+    setAuthorizedFriends(newFr); //set the new state
+  };
+
+  const switchWriteModify = (id: number) => {
+    const newFr = [...authorizedFriends];
+    newFr[id]["write"] = !newFr[id]["write"];
+    setAuthorizedFriends(newFr); //set the new state
   };
 
   /**
@@ -74,10 +81,11 @@ export function TodolistShareScreen({ route }) {
 
   // Update an authorization
   const updateFriendPermission = async (
-    selectedFriend: any,
+    todolistUserId: number,
     readAuth: boolean,
     writeAuth: boolean
   ) => {
+    console.log(todolistUserId);
     const rawResponse = await fetch("http://127.0.0.1:8000/api/share/update", {
       method: "POST",
       headers: {
@@ -86,15 +94,14 @@ export function TodolistShareScreen({ route }) {
         Authorization: "Bearer " + token,
       },
       body: JSON.stringify({
-        selected_friend: selectedFriend,
-        todolist_id: todolist_id,
+        todolist_user_id: todolistUserId,
         read_auth: readAuth,
         write_auth: writeAuth,
       }),
     });
 
     if (rawResponse.ok) {
-      navigation.goBack();
+      showAuthorized();
       Alert.alert("Updated permissions !");
     } else {
       Alert.alert("Failed to update permissions !");
@@ -164,8 +171,8 @@ export function TodolistShareScreen({ route }) {
             <ListItem key={i} bottomDivider>
               <Icon name={"user"} type="antdesign" />
               <ListItem.Content>
-                <ListItem.Title>{l.friend.email}</ListItem.Title>
-                <ListItem.Subtitle>{l.friend.name}</ListItem.Subtitle>
+                <ListItem.Title>{l.friend.name}</ListItem.Title>
+                <ListItem.Subtitle>{l.friend.email}</ListItem.Subtitle>
               </ListItem.Content>
               <View style={styles.container}>
                 <CheckBox
@@ -198,36 +205,35 @@ export function TodolistShareScreen({ route }) {
           <Text>Aucun ami.</Text>
         )}
       </View>
-
       <View style={{ marginTop: 50 }}>
         <Text style={styles.title}>Modifier des permissions</Text>
         {authorizedFriends.length >= 1 ? (
-          authorizedFriends.map((l: FriendWithPermissions, i) => (
+          authorizedFriends.map((l: TodolistUsers, i) => (
             <ListItem key={i} bottomDivider>
               <Icon name={"user"} type="antdesign" />
               <ListItem.Content>
-                <ListItem.Title>{l.friend.email}</ListItem.Title>
-                <ListItem.Subtitle>{l.friend.name}</ListItem.Subtitle>
+                <ListItem.Title>{l.user.name}</ListItem.Title>
+                <ListItem.Title>{l.user.email}</ListItem.Title>
               </ListItem.Content>
               <View style={styles.container}>
                 <CheckBox
                   title="Lecture"
                   checked={l.read}
-                  onPress={() => switchRead(i)}
+                  onPress={() => switchReadModify(i)}
                 />
                 <CheckBox
                   title="Écriture"
                   checked={l.write}
-                  onPress={() => switchWrite(i)}
+                  onPress={() => switchWriteModify(i)}
                 />
                 <Button
                   onPress={() => {
                     if (l.read == undefined) {
-                      sendFriendPermission(l.friend.id, false, l.write);
+                      updateFriendPermission(l.id, false, l.write);
                     } else if (l.write == undefined) {
-                      sendFriendPermission(l.friend.id, l.read, false);
+                      updateFriendPermission(l.id, l.read, false);
                     } else {
-                      sendFriendPermission(l.friend.id, l.read, l.write);
+                      updateFriendPermission(l.id, l.read, l.write);
                     }
                   }}
                   type={"outline"}

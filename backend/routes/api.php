@@ -50,7 +50,8 @@ Route::middleware('auth:sanctum')->post('/friends/remove', [FriendController::cl
 
 // Sharing
 Route::middleware('auth:sanctum')->post('/share/send', [WaitingSharedTodolistController::class, 'sendAuthorization']);
-Route::middleware('auth:sanctum')->get('/share/authorized', [WaitingSharedTodolistController::class, 'showAuthorized']);
+Route::middleware('auth:sanctum')->post('/share/authorized', [WaitingSharedTodolistController::class, 'showAuthorized']);
+Route::middleware('auth:sanctum')->post('/share/update', [WaitingSharedTodolistController::class, 'updateAuthorization']);
 Route::middleware('auth:sanctum')->get('/share/show', [WaitingSharedTodolistController::class, 'showAwaiting']);
 Route::middleware('auth:sanctum')->post('/share/accept', [WaitingSharedTodolistController::class, 'acceptAuthorization']);
 Route::middleware('auth:sanctum')->post('/share/refuse', [WaitingSharedTodolistController::class, 'refuseAuthorization']);

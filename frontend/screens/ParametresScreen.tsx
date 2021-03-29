@@ -91,6 +91,7 @@ export default function ParametresScreen() {
       resetFriend();
       setFriendEmail("");
       getFriendlist();
+      getRequestsSent();
       Alert.alert("Demande envoyée !");
     } else {
       Alert.alert("Erreur ! La demande n'a pas pu être envoyée.");
