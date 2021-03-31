@@ -12,7 +12,11 @@ import getTokenBearerName from "./hooks/auth/getTokenBearerName";
 import { LoginScreen } from "./screens/LoginScreen";
 import { InscriptionScreen } from "./screens/InscriptionScreen";
 
-import { NavigationContainer } from "@react-navigation/native";
+import {
+  DarkTheme,
+  DefaultTheme,
+  NavigationContainer,
+} from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { TodolistsProvider } from "./store/TodolistsStore";
 import { AuthContext } from "./store/AuthStore";
@@ -60,10 +64,11 @@ export default function App() {
    * Main navigation that leads to the Application once logged in
    */
   const app = <Navigation colorScheme={colorScheme} />;
-
   const Stack = createStackNavigator();
   const loginStack = (
-    <NavigationContainer>
+    <NavigationContainer
+      theme={colorScheme === "dark" ? DarkTheme : DefaultTheme}
+    >
       <Stack.Navigator initialRouteName="Login">
         <Stack.Screen name="Login" options={{ title: "Se connecter" }}>
           {(props) => <LoginScreen />}

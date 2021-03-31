@@ -4,7 +4,11 @@ import { Alert, FlatList, RefreshControl, StyleSheet } from "react-native";
 import { Text, View } from "../components/Themed";
 import getTokenBearer from "../hooks/auth/getTokenBearer";
 import { Task, TodolistInterface } from "../interfaces/TodolistsInterface";
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import {
+  useFocusEffect,
+  useNavigation,
+  useTheme,
+} from "@react-navigation/native";
 import { TodolistsContext } from "../store/TodolistsStore";
 import { useContext } from "react";
 import { Button, Divider } from "react-native-elements";
@@ -18,6 +22,59 @@ export default function ListesScreen() {
   const token = getTokenBearer();
   const [refreshing, setRefreshing] = React.useState(false);
   const navigation = useNavigation();
+  const { colors } = useTheme();
+
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      justifyContent: "center",
+      padding: 20,
+    },
+    todolistContainer: {
+      width: "100%",
+    },
+    separator: {
+      marginVertical: 30,
+      height: 1,
+      width: "80%",
+    },
+    todolist: {
+      backgroundColor: colors.card,
+      padding: 20,
+      marginTop: 20,
+    },
+    task: {
+      padding: 6,
+      marginVertical: 6,
+      borderRadius: 8,
+      backgroundColor: colors.border,
+      color: colors.border,
+    },
+    taskWrapper: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      backgroundColor: colors.border,
+      color: colors.border,
+    },
+
+    title: {
+      fontSize: 24,
+      fontWeight: "bold",
+      marginTop: 5,
+      marginBottom: 5,
+    },
+    subTitle: {
+      fontSize: 16,
+      fontWeight: "bold",
+      backgroundColor: colors.border,
+      color: colors.text,
+    },
+    regular: {
+      fontSize: 14,
+      backgroundColor: colors.border,
+      color: colors.text,
+    },
+  });
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
@@ -83,7 +140,7 @@ export default function ListesScreen() {
   const Task = ({ task }) => (
     <View style={styles.task}>
       <View style={styles.taskWrapper}>
-        <View>
+        <View style={{ marginBottom: 5 }}>
           <Text style={styles.subTitle}>{task.title}</Text>
           <Text style={styles.regular}>{task.description}</Text>
         </View>
@@ -167,47 +224,3 @@ export default function ListesScreen() {
     </View>
   );
 }
-
-//region Styles
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    padding: 20,
-  },
-  todolistContainer: {
-    width: "100%",
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: "80%",
-  },
-
-  todolist: {
-    backgroundColor: "#ecf0f1",
-    padding: 20,
-    marginTop: 20,
-  },
-  task: {
-    padding: 6,
-    marginVertical: 6,
-  },
-  taskWrapper: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
-
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-  },
-  subTitle: {
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-  regular: {
-    fontSize: 14,
-  },
-});
-//endregion

@@ -11,7 +11,7 @@ import { Button, Text, Icon, ListItem } from "react-native-elements";
 import { View } from "../components/Themed";
 import { AuthContext } from "../store/AuthStore";
 import getTokenBearer from "../hooks/auth/getTokenBearer";
-import { useFocusEffect } from "@react-navigation/native";
+import { useFocusEffect, useTheme } from "@react-navigation/native";
 import { SentFriendRequestInterface } from "../interfaces/SentFriendRequestInterface";
 import { FriendRecord } from "../interfaces/FriendsInterface";
 
@@ -26,6 +26,47 @@ export default function ParametresScreen() {
   const [validEmail, setValidEmail] = React.useState(false);
   const [sentFriendRequests, setSentFriendRequests] = React.useState([]);
   const [friends, setFriends] = React.useState([]);
+  const { colors } = useTheme();
+
+  const styles = StyleSheet.create({
+    fullWidth: {
+      width: "100%",
+    },
+    containerPadding: {
+      padding: 20,
+    },
+    container: {
+      flex: 1,
+    },
+    wrapperMarginTop: {
+      marginTop: 60,
+    },
+    centerItems: {
+      alignItems: "center",
+    },
+    title: {
+      fontSize: 20,
+      fontWeight: "bold",
+    },
+    separator: {
+      marginVertical: 30,
+      height: 1,
+      width: "80%",
+    },
+    textInput: {
+      width: "100%",
+      height: 40,
+      color: colors.text,
+    },
+    listItem: {
+      backgroundColor: colors.card,
+      color: colors.text,
+    },
+
+    textColor: {
+      color: colors.text,
+    },
+  });
 
   /**
    * Set local properties to default
@@ -195,15 +236,21 @@ export default function ParametresScreen() {
       style={[styles.container, styles.centerItems, styles.containerPadding]}
     >
       <View style={[styles.fullWidth]}>
-        <Text h4>Mes amis</Text>
+        <Text h4 style={styles.textColor}>
+          Mes amis
+        </Text>
 
         {friends.length >= 1 ? (
           friends.map((l: FriendRecord, i) => (
-            <ListItem key={i} bottomDivider>
+            <ListItem containerStyle={styles.listItem} key={i} bottomDivider>
               <Icon name={"user"} type="antdesign" />
               <ListItem.Content>
-                <ListItem.Title>{l.friend.email}</ListItem.Title>
-                <ListItem.Subtitle>{l.friend.name}</ListItem.Subtitle>
+                <ListItem.Title style={styles.textColor}>
+                  {l.friend.email}
+                </ListItem.Title>
+                <ListItem.Subtitle style={styles.textColor}>
+                  {l.friend.name}
+                </ListItem.Subtitle>
               </ListItem.Content>
               <View>
                 <Button
@@ -215,78 +262,62 @@ export default function ParametresScreen() {
             </ListItem>
           ))
         ) : (
-          <Text>Aucun ami.</Text>
+          <Text style={styles.textColor}>Aucun ami.</Text>
         )}
       </View>
       <View style={[styles.fullWidth, styles.wrapperMarginTop]}>
-        <Text h4>Ajouter un ami</Text>
+        <Text h4 style={styles.textColor}>
+          Ajouter un ami
+        </Text>
         <TextInput
           style={styles.textInput}
           textContentType={"emailAddress"}
           placeholder={"Email d'un ami"}
+          placeholderTextColor={colors.text}
           onChangeText={(text) => handleEmail(text)}
           value={friendEmail}
         />
         {validEmail ? (
-          <Text style={{ marginBottom: 5 }}>Ami trouvé !</Text>
+          <Text style={[{ marginBottom: 5 }, styles.textColor]}>
+            Ami trouvé !
+          </Text>
         ) : null}
 
         <Button onPress={sendFriendRequest} title="Envoyer" />
       </View>
 
       <View style={[styles.fullWidth, styles.wrapperMarginTop]}>
-        <Text h4>Liste des requêtes d'ami</Text>
+        <Text h4 style={styles.textColor}>
+          Liste des requêtes d'ami
+        </Text>
 
         {sentFriendRequests.length >= 1 ? (
           sentFriendRequests.map((l: SentFriendRequestInterface, i) => (
-            <ListItem key={i} bottomDivider>
+            <ListItem containerStyle={styles.listItem} key={i} bottomDivider>
               <Icon name={"user"} type="antdesign" />
               <ListItem.Content>
-                <ListItem.Title>{l.user_target.email}</ListItem.Title>
-                <ListItem.Subtitle>{l.user_target.name}</ListItem.Subtitle>
-                <ListItem.Subtitle>Demande d'ami envoyée.</ListItem.Subtitle>
+                <ListItem.Title style={styles.textColor}>
+                  {l.user_target.email}
+                </ListItem.Title>
+                <ListItem.Subtitle style={styles.textColor}>
+                  {l.user_target.name}
+                </ListItem.Subtitle>
+                <ListItem.Subtitle style={styles.textColor}>
+                  Demande d'ami envoyée.
+                </ListItem.Subtitle>
               </ListItem.Content>
             </ListItem>
           ))
         ) : (
-          <Text>Aucune requête envoyée.</Text>
+          <Text style={styles.textColor}>Aucune requête envoyée.</Text>
         )}
       </View>
       <View style={[styles.fullWidth, styles.wrapperMarginTop]}>
-        <Text h4>Mon compte</Text>
+        <Text h4 style={styles.textColor}>
+          Mon compte
+        </Text>
         <Button onPress={signOut} title="Se déconnecter" />
       </View>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  fullWidth: {
-    width: "100%",
-  },
-  containerPadding: {
-    padding: 20,
-  },
-  container: {
-    flex: 1,
-  },
-  wrapperMarginTop: {
-    marginTop: 60,
-  },
-  centerItems: {
-    alignItems: "center",
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: "bold",
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: "80%",
-  },
-  textInput: {
-    width: "100%",
-    height: 40,
-  },
-});

@@ -3,13 +3,61 @@ import { Alert, StyleSheet, View } from "react-native";
 import { Button, Icon, ListItem, Text } from "react-native-elements";
 import getTokenBearer from "../hooks/auth/getTokenBearer";
 import { SentFriendRequestInterface } from "../interfaces/SentFriendRequestInterface";
-import { useFocusEffect } from "@react-navigation/native";
+import { useFocusEffect, useTheme } from "@react-navigation/native";
 import { WaitingSharedTodolist } from "../interfaces/TodolistsInterface";
 
 export default function AccueilScreen() {
   const token = getTokenBearer();
   const [friendRequests, setFriendRequests] = React.useState([]);
   const [sharedRequests, setSharedRequests] = React.useState([]);
+
+  const { colors } = useTheme();
+  const styles = StyleSheet.create({
+    fullWidth: {
+      backgroundColor: colors.background,
+      width: "100%",
+    },
+    containerPadding: {
+      padding: 20,
+    },
+    container: {
+      flex: 1,
+    },
+    buttonContainer: {
+      flex: 1,
+      maxWidth: 100,
+    },
+    button: {
+      paddingTop: 10,
+    },
+    wrapperMarginTop: {
+      marginTop: 60,
+    },
+    centerItems: {
+      alignItems: "center",
+    },
+    title: {
+      fontSize: 20,
+      fontWeight: "bold",
+      color: colors.text,
+    },
+    separator: {
+      marginVertical: 30,
+      height: 1,
+      width: "80%",
+    },
+    textInput: {
+      width: "100%",
+      height: 40,
+    },
+    textColor: {
+      color: colors.text,
+    },
+    listItem: {
+      backgroundColor: colors.card,
+      color: colors.card,
+    },
+  });
 
   const getFriendRequests = async () => {
     const rawResponse = await fetch(
@@ -142,14 +190,20 @@ export default function AccueilScreen() {
   return (
     <View style={[styles.container, styles.fullWidth, styles.containerPadding]}>
       <View>
-        <Text h4>Demandes d'ami reçues</Text>
+        <Text h4 style={styles.title}>
+          Demandes d'ami reçues
+        </Text>
         {friendRequests.length >= 1 ? (
           friendRequests.map((l: SentFriendRequestInterface, i) => (
-            <ListItem key={i} bottomDivider>
+            <ListItem containerStyle={styles.listItem} key={i} bottomDivider>
               <Icon name={"user"} type="antdesign" />
               <ListItem.Content>
-                <ListItem.Title>{l.user_initiator.email}</ListItem.Title>
-                <ListItem.Subtitle>{l.user_initiator.name}</ListItem.Subtitle>
+                <ListItem.Title style={styles.textColor}>
+                  {l.user_initiator.email}
+                </ListItem.Title>
+                <ListItem.Subtitle style={styles.textColor}>
+                  {l.user_initiator.name}
+                </ListItem.Subtitle>
               </ListItem.Content>
 
               <View style={styles.buttonContainer}>
@@ -169,18 +223,24 @@ export default function AccueilScreen() {
             </ListItem>
           ))
         ) : (
-          <Text>Aucune demande reçue.</Text>
+          <Text style={styles.title}>Aucune demande reçue.</Text>
         )}
       </View>
       <View style={styles.wrapperMarginTop}>
-        <Text h4>Partages de Todolist reçus</Text>
+        <Text h4 style={styles.title}>
+          Partages de Todolist reçus
+        </Text>
         {sharedRequests.length >= 1 ? (
           sharedRequests.map((l: WaitingSharedTodolist, i) => (
-            <ListItem key={i} bottomDivider>
+            <ListItem containerStyle={styles.listItem} key={i} bottomDivider>
               <Icon name={"bars"} type="antdesign" />
               <ListItem.Content>
-                <ListItem.Title>{l.todolist.title}</ListItem.Title>
-                <ListItem.Subtitle>Todolist de {l.user.name}</ListItem.Subtitle>
+                <ListItem.Title style={styles.textColor}>
+                  {l.todolist.title}
+                </ListItem.Title>
+                <ListItem.Subtitle style={styles.textColor}>
+                  Todolist de {l.user.name}
+                </ListItem.Subtitle>
               </ListItem.Content>
 
               <View style={styles.buttonContainer}>
@@ -200,48 +260,9 @@ export default function AccueilScreen() {
             </ListItem>
           ))
         ) : (
-          <Text>Aucune demande reçue.</Text>
+          <Text style={styles.title}>Aucune demande reçue.</Text>
         )}
       </View>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  fullWidth: {
-    backgroundColor: "white",
-    width: "100%",
-  },
-  containerPadding: {
-    padding: 20,
-  },
-  container: {
-    flex: 1,
-  },
-  buttonContainer: {
-    flex: 1,
-    maxWidth: 100,
-  },
-  button: {
-    paddingTop: 10,
-  },
-  wrapperMarginTop: {
-    marginTop: 60,
-  },
-  centerItems: {
-    alignItems: "center",
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: "bold",
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: "80%",
-  },
-  textInput: {
-    width: "100%",
-    height: 40,
-  },
-});

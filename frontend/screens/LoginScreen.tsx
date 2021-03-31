@@ -3,7 +3,7 @@ import * as React from "react";
 import { Text, View } from "../components/Themed";
 import { Button, Image, StyleSheet, TextInput } from "react-native";
 import { AuthContext } from "../store/AuthStore";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useTheme } from "@react-navigation/native";
 
 // @ts-ignore
 export function LoginScreen() {
@@ -12,6 +12,39 @@ export function LoginScreen() {
   // @ts-ignore
   const { signIn } = React.useContext(AuthContext);
   const navigation = useNavigation();
+  const { colors } = useTheme();
+
+  //region Login - Styles
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      alignItems: "center",
+      justifyContent: "center",
+      backgroundColor: colors.background,
+    },
+    title: {
+      fontSize: 20,
+      fontWeight: "bold",
+      backgroundColor: colors.background,
+      color: colors.text,
+    },
+    separator: {
+      marginVertical: 30,
+      height: 1,
+      width: "80%",
+      color: colors.text,
+    },
+    logo: {
+      width: 150,
+      height: 150,
+    },
+    textInput: {
+      height: 50,
+      width: 250,
+      backgroundColor: colors.background,
+      color: colors.text,
+    },
+  });
 
   return (
     <View style={styles.container}>
@@ -20,16 +53,13 @@ export function LoginScreen() {
         source={require("../assets/images/supinfo-logo-2020-quadri-png.png")}
       />
       <Text style={styles.title}>Bienvenue sur Todolist</Text>
-      <View
-        style={styles.separator}
-        lightColor="#eee"
-        darkColor="rgba(255,255,255,0.1)"
-      />
+      <View style={styles.separator} />
 
       <View style={{ justifyContent: "center" }}>
         <TextInput
           style={styles.textInput}
           placeholder="Email"
+          placeholderTextColor={colors.text}
           textContentType={"emailAddress"}
           onChangeText={(text) => setEmail(text)}
           value={email}
@@ -38,17 +68,14 @@ export function LoginScreen() {
         <TextInput
           style={styles.textInput}
           placeholder="Mot de passe"
+          placeholderTextColor={colors.text}
           secureTextEntry={true}
           textContentType={"password"}
           onChangeText={(text) => setPassword(text)}
           value={password}
         />
       </View>
-      <View
-        style={styles.separator}
-        lightColor="#eee"
-        darkColor="rgba(255,255,255,0.1)"
-      />
+      <View style={styles.separator} />
 
       <Button
         title="Se connecter"
@@ -63,30 +90,4 @@ export function LoginScreen() {
 }
 
 //endregion
-
-//region Login - Styles
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: "bold",
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: "80%",
-  },
-  logo: {
-    width: 150,
-    height: 150,
-  },
-  textInput: {
-    height: 50,
-    width: 250,
-  },
-});
 //endregion

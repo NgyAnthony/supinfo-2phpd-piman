@@ -2,7 +2,11 @@
 import * as React from "react";
 import { Text, View } from "../components/Themed";
 import { Alert, Image, StyleSheet, TextInput } from "react-native";
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import {
+  useFocusEffect,
+  useNavigation,
+  useTheme,
+} from "@react-navigation/native";
 import getTokenBearer from "../hooks/auth/getTokenBearer";
 import {
   FriendRecord,
@@ -19,6 +23,42 @@ export function TodolistShareScreen({ route }) {
     TodolistUsers[]
   >([]);
   const [friends, setFriends] = React.useState<FriendWithPermissions[]>([]);
+
+  const { colors } = useTheme();
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      justifyContent: "flex-start",
+      paddingLeft: 15,
+      paddingRight: 15,
+    },
+    title: {
+      fontSize: 20,
+      fontWeight: "bold",
+      textAlign: "center",
+      color: colors.text,
+    },
+    separator: {
+      marginVertical: 30,
+      height: 1,
+      width: "80%",
+    },
+    logo: {
+      width: 150,
+      height: 150,
+    },
+    textInput: {
+      height: 50,
+      width: 250,
+    },
+    colorText: {
+      color: colors.text,
+    },
+    listItem: {
+      backgroundColor: colors.card,
+      color: colors.card,
+    },
+  });
 
   const navigation = useNavigation();
   const token = getTokenBearer();
@@ -168,11 +208,15 @@ export function TodolistShareScreen({ route }) {
         <Text style={styles.title}>Assigner des permissions</Text>
         {friends.length >= 1 ? (
           friends.map((l: FriendWithPermissions, i) => (
-            <ListItem key={i} bottomDivider>
+            <ListItem containerStyle={styles.listItem} key={i} bottomDivider>
               <Icon name={"user"} type="antdesign" />
               <ListItem.Content>
-                <ListItem.Title>{l.friend.name}</ListItem.Title>
-                <ListItem.Subtitle>{l.friend.email}</ListItem.Subtitle>
+                <ListItem.Title style={styles.colorText}>
+                  {l.friend.name}
+                </ListItem.Title>
+                <ListItem.Subtitle style={styles.colorText}>
+                  {l.friend.email}
+                </ListItem.Subtitle>
               </ListItem.Content>
               <View style={styles.container}>
                 <CheckBox
@@ -209,11 +253,15 @@ export function TodolistShareScreen({ route }) {
         <Text style={styles.title}>Modifier des permissions</Text>
         {authorizedFriends.length >= 1 ? (
           authorizedFriends.map((l: TodolistUsers, i) => (
-            <ListItem key={i} bottomDivider>
+            <ListItem containerStyle={styles.listItem} key={i} bottomDivider>
               <Icon name={"user"} type="antdesign" />
               <ListItem.Content>
-                <ListItem.Title>{l.user.name}</ListItem.Title>
-                <ListItem.Title>{l.user.email}</ListItem.Title>
+                <ListItem.Title style={styles.colorText}>
+                  {l.user.name}
+                </ListItem.Title>
+                <ListItem.Title style={styles.colorText}>
+                  {l.user.email}
+                </ListItem.Title>
               </ListItem.Content>
               <View style={styles.container}>
                 <CheckBox
@@ -253,30 +301,4 @@ export function TodolistShareScreen({ route }) {
 //endregion
 
 //region Styles
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "flex-start",
-    paddingLeft: 15,
-    paddingRight: 15,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: "bold",
-    textAlign: "center",
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: "80%",
-  },
-  logo: {
-    width: 150,
-    height: 150,
-  },
-  textInput: {
-    height: 50,
-    width: 250,
-  },
-});
 //endregion
